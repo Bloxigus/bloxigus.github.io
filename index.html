@@ -615,6 +615,7 @@
     div.style.height = `${window.innerHeight - 1}px`
     if (window.innerHeight > window.innerWidth) {
         div.style.width = `${window.innerWidth - 1}px`
+        div.style.height = `auto`
     } else {
         div.style.width = `calc(100% - ${(window.innerHeight - 1) / 2}px)`
         div.style.height = `${window.innerHeight - 1}px`
@@ -1039,6 +1040,7 @@
     function onWindowResize() {
         let canvasSize = Math.min(window.innerHeight - 1, window.innerWidth - 1)
         if (window.innerHeight > window.innerWidth) {
+            div.style.height = `auto`
             div.style.width = `${window.innerWidth - 1}px`
         } else {
             div.style.width = `calc(100% - ${(window.innerHeight - 1) / 2}px)`
