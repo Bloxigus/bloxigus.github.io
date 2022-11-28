@@ -1,0 +1,31 @@
+body {
+    background-color: gray;
+    margin: 0px;
+}
+
+div * {
+    font-size: 30px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+input[type="color"] {
+    width: 200px;
+}
+input.idBox {
+    width: 660px;
+}
+input#slim {
+    width: 194px;
+}
+div.center {
+    text-align: center;
+}
+canvas#can {
+    display:none;
+    float:left;
+    height: 100%;
+    image-rendering: pixelated;
+}
+img {
+    display: none;
+}
