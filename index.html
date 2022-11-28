@@ -1027,8 +1027,8 @@
         document.body.before(canvas, renderer.domElement);
         renderer.domElement.style.float = "left"
         controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableZoom = true;
-        controls.enablePan = true;
+        controls.enableZoom = false;
+        controls.enablePan = false;
         controls.enableDamping = false;
         controls.rotateSpeed = 1;
         window.addEventListener('resize', onWindowResize);
