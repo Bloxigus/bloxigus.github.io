@@ -1031,7 +1031,7 @@
     function onWindowResize() {
         let canvasSize = Math.min(window.innerHeight - 1, window.innerWidth - 1)
         div.style.height = `${window.innerHeight - 1}px`
-        if (window.innerHeight > window.innerWidth) div.style.width = `calc(${window.innerWidth - 1}px`
+        if (window.innerHeight > window.innerWidth) div.style.width = `${window.innerWidth - 1}px`
         else div.style.width = `calc(100% - ${(window.innerHeight - 1)/2}px)`
         camera.aspect = 0.5;
         camera.updateProjectionMatrix();
