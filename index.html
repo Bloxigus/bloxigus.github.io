@@ -588,7 +588,7 @@
 <script>
     let img = document.getElementsByTagName("img")[0];
     let canvas = document.getElementsByTagName("canvas")[0]
-    canvas.style.height = `${window.innerHeight-1}px`
+    canvas.style.height = `${Math.min(window.innerHeight-1,window.innerWidth-1)}px`
     let colourPickers = document.getElementsByTagName("input");
     let button = document.getElementsByTagName("button")[0];
     let random = document.getElementsByTagName("button")[1];
