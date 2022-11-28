@@ -1,0 +1,681 @@
+<style>
+    body {
+        background-color: gray;
+        margin:0px;
+    }
+</style>
+<canvas id="can" width="64" height="64" style="float:left;height: 100%;image-rendering: pixelated;"></canvas>
+<div style="float: right;width:50%">
+    <div style="float: left;">
+        <p>Select Axolotl Colours</p>
+        <div>
+            <input type="color" id="edge" name="edge" value="#B0D5FC">
+            <label for="edge">Head Corners</label>
+        </div>
+        <div>
+            <input type="color" id="middle" name="middle" value="#E2EEFF">
+            <label for="middle">Head Middle</label>
+        </div>
+        <div>
+            <input type="color" id="mouth" name="mouth" value="#E2AAC0">
+            <label for="mouth">Mouth</label>
+        </div>
+        <div>
+            <input type="color" id="eyes" name="eyes" value="#3A006C">
+            <label for="eyes">Eyes</label>
+        </div>
+        <div>
+            <input type="color" id="finEnd" name="finEnd" value="#D2C2E0">
+            <label for="finEnd">Ragi Start</label>
+        </div>
+        <div>
+            <input type="color" id="finStart" name="finStart" value="#D25989">
+            <label for="finStart">Ragi End</label>
+        </div>
+        <div>
+            <input type="color" id="tie" name="tie" value="#9e1020">
+            <label for="tie">Tie Colour</label>
+        </div>
+        <div>
+            <button>
+                Download The Skin!
+            </button>
+        </div>
+        <div>
+            <button>
+                🎲Randomise!
+            </button>
+        </div>
+        <div>
+            <input type="text" style="width: 300px;">
+            <button>
+                Load Skin From ID
+            </button>
+        </div>
+    </div>
+</div>
+<img style="display: none;"
+    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFyWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4wLWMwMDAgNzkuMTcxYzI3ZiwgMjAyMi8wOC8xNi0xODowMjo0MyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI0LjAgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMi0xMS0yN1QxNToxNzoxNisxMDozMCIgeG1wOk1vZGlmeURhdGU9IjIwMjItMTEtMjdUMjA6MTc6MjYrMTA6MzAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMTEtMjdUMjA6MTc6MjYrMTA6MzAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmU1Y2FjZmVlLTMwYTMtM2U0YS1hMDkzLWQyMjkyYjljZGY3MSIgeG1wTU06RG9jdW1lbnRJRD0i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">
+<script>
+    var colours = {
+        "A": "edge",
+        "B": "edge2",
+        "C": "middle",
+        "D": "lip",
+        "E": "eye",
+        "F": "fin1",
+        "G": "fin2",
+        "H": "fin3",
+        "I": "fin4",
+        "J": "fin5",
+        " ": "transparent",
+        "X": "base"
+    }
+    var colourLocations = {
+        head: {
+            top: [
+                "AABBBBAA",
+                "ABCCCCBA",
+                "JCCCCCCJ",
+                "ICCCCCCI",
+                "BCCCCCCB",
+                "BCCCCCCB",
+                "ABCCCCBA",
+                "AABBBBAA"
+            ],
+            side: [
+                "AABBIJAA",
+                "ABCGHCBA",
+                "BCFFCIJB",
+                "BCCCGHCB",
+                "BCCFFCII",
+                "ECCCCGHB",
+                "ABCCFFBA",
+                "AABBBBAA"
+            ],
+            front: [
+                "AABBBBAA",
+                "ABCCCCBA",
+                "BCCCCCCB",
+                "BCCCCCCB",
+                "BCCCCCCB",
+                "ECCDDCCE",
+                "ABCCCCBA",
+                "AABBBBAA"
+            ],
+            base: [
+                "AABBBBAA",
+                "ABCCCCBA",
+                "BCCCCCCB",
+                "BCCCCCCB",
+                "BCCCCCCB",
+                "BCCCCCCB",
+                "ABCCCCBA",
+                "AABBBBAA"
+            ],
+            back: [
+                "AABBBBAA",
+                "ABCCCCBA",
+                "BCCCCCCB",
+                "BCCCCCCB",
+                "JBCCCCBJ",
+                "BCCCCCCB",
+                "ABCCCCBA",
+                "AABBBBAA"
+            ]
+        },
+        hat: {
+            top: [
+                "        ",
+                "        ",
+                "J      J",
+                "I      I",
+                "        ",
+                "        ",
+                "        ",
+                "        "
+            ],
+            side: [
+                "    IJ  ",
+                "   GH   ",
+                "  FF IJ ",
+                "    GH  ",
+                "   FF II",
+                "     GH ",
+                "    FF  ",
+                "        "
+            ],
+            front: [
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        "
+            ],
+            base: [
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        "
+            ],
+            back: [
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "J      J",
+                "        ",
+                "        ",
+                "        "
+            ]
+        },
+        legs: {
+            top: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            side: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            front: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            base: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            back: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ]
+        },
+        outerLayerLeg: {
+            top: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            side: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            front: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            base: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            back: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ]
+        },
+        chest: {
+            top: [
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX"
+            ],
+            side: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            front: [
+                "XXKKKKXX",
+                "XXXKKXXX",
+                "XXXKKXXX",
+                "XXXKKXXX",
+                "XXXKKXXX",
+                "XXXKKXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX"
+            ],
+            base: [
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX"
+            ],
+            back: [
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX",
+                "XXXXXXXX"
+            ]
+        },
+        arm: {
+            top: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            side: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "BBBB",
+                "AAAA"
+            ],
+            front: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "BBBB",
+                "AAAA"
+            ],
+            base: [
+                "AAAA",
+                "AAAA",
+                "AAAA",
+                "AAAA"
+            ],
+            back: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "BBBB",
+                "AAAA"
+            ]
+        },
+        outerLayerArm: {
+            top: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            side: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            front: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            base: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ],
+            back: [
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX",
+                "XXXX"
+            ]
+        }
+    }
+    var locations = {
+        head: [[0, 0]],
+        hat: [[32, 0]],
+        legs: [[0, 16], [16, 48]],
+        chest: [[16, 16]],
+        arm: [[40, 16], [32, 48]],
+        outerLayerArm: [[40, 32], [48, 48]]
+    }
+    class AxolotlGenerator {
+        static canvasContext;
+        static makeAxolotl(
+            edge = [Math.random() * 255, Math.random() * 255, Math.random() * 255, 255],
+            middle = [Math.random() * 255, Math.random() * 255, Math.random() * 255, 255],
+            lip = [255 - (edge[0] + middle[0]) / 2, 255 - (edge[1] + middle[1]) / 2, 255 - (edge[2] + middle[2]) / 2, 255],
+            eye = [300 - edge[0], 300 - edge[1], 300 - edge[2], 255],
+            fin1 = [Math.random() * 255, Math.random() * 255, Math.random() * 255, 255],
+            fin5 = [Math.random() * 255, Math.random() * 255, Math.random() * 255, 255],
+            tie = [158, 16, 158, 255],
+            swapIfBad = true
+        ) {
+            if (swapIfBad && (fin1[0] + fin1[1] + fin1[2]) < (fin5[0] + fin5[1] + fin5[2])) {
+                [fin1, fin5] = [fin5, fin1]
+            }
+            if (swapIfBad && (edge[0] + edge[1] + edge[2]) > (middle[0] + middle[1] + middle[2])) {
+                [edge, middle] = [middle, edge]
+            }
+            var edge2 = [(2 * edge[0] + 3 * middle[0]) / 5, (2 * edge[1] + 3 * middle[1]) / 5, (2 * edge[2] + 3 * middle[2]) / 5, 255]
+            var fin2 = [(3 * fin1[0] + fin5[0]) / 4, (3 * fin1[1] + fin5[1]) / 4, (3 * fin1[2] + fin5[2]) / 4, 255]
+            var fin3 = [(fin1[0] + fin5[0]) / 2, (fin1[1] + fin5[1]) / 2, (fin1[2] + fin5[2]) / 2, 255]
+            var fin4 = [(fin1[0] + 3 * fin5[0]) / 4, (fin1[1] + 3 * fin5[1]) / 4, (fin1[2] + 3 * fin5[2]) / 4, 255]
+            var colours = {
+                "A": edge,
+                "B": edge2,
+                "C": middle,
+                "D": lip,
+                "E": eye,
+                "F": fin1,
+                "G": fin2,
+                "H": fin3,
+                "I": fin4,
+                "J": fin5,
+                "K": tie,
+                " ": [0, 0, 0, 0],
+                "X": [-1, -1, -1, -1]
+            }
+            var png = { width: 64, height: 64 }
+            var imageData = this.canvasContext.getImageData(0, 0, 64, 64)
+            var data = [...imageData.data].reduce((prev, curr, index) => {
+                (prev[Math.floor(index / 4)]) ? prev[Math.floor(index / 4)][index % 4] = curr : prev[Math.floor(index / 4)] = [curr]
+                return prev;
+            }, []).reduce((prev, curr, inde) => {
+                (prev[Math.floor(inde / (png.width))]) ? prev[Math.floor(inde / png.width)][inde % png.width] = curr : prev[Math.floor(inde / (png.width))] = [curr]
+                return prev;
+            }, [])
+            for (var location in locations) {
+                for (var loc2 in locations[location]) {
+                    var type = location
+                    var d = colourLocations[type]
+                    var width = 2 * d["side"][0].length + 2 * d["front"][0].length
+                    var height = d["front"].length + d["top"].length
+                    var pos = locations[location][loc2]
+                    var innerLocations = {
+                        top: [d["side"][0].length, 0, d["side"][0].length + d["top"][0].length - 1, d["top"].length - 1],
+                        base: [d["side"][0].length + d["top"][0].length, 0, 2 * d["side"][0].length + d["top"][0].length - 1, d["top"].length - 1],
+                        side_left: [0, d["top"].length, d["side"][0].length - 1, d["top"].length + d["side"].length - 1],
+                        side_right: [d["side"][0].length + d["front"][0].length, d["top"].length, 2 * d["side"][0].length + d["front"][0].length - 1, d["top"].length + d["side"].length - 1],
+                        front: [d["side"][0].length, d["top"].length, d["side"][0].length + d["front"][0].length - 1, d["top"].length + d["front"].length - 1],
+                        back: [2 * d["side"][0].length + d["front"][0].length, d["top"].length, 2 * d["side"][0].length + 2 * d["front"][0].length - 1, d["top"].length + d["back"].length - 1]
+                    }
+                    for (let l in innerLocations) {
+                        var actL = l + ""
+                        l = l.split("_")[0]
+                        var l2 = innerLocations[actL];
+                        var d2 = { ...d }
+                        if (actL.includes("left")) for (const key in d2) { d2[key] = d2[key].map(e => { return (e.split("").reverse().join("")) }) }
+                        for (let i2 = 0; i2 < d2[l].length; i2++) {
+                            let element = d2[l];
+                            //if (element.includes("K"))console.log("k")
+                            for (let i3 = 0; i3 < d2[l][0].length; i3++) {
+                                const codeLetter = d2[l][i2][i3];
+                                if (codeLetter == "X") {
+                                    continue;
+                                }
+                                //if (codeLetter == "K") console.log("K")
+                                data[pos[1] + l2[1] + i2][pos[0] + l2[0] + i3] = colours[codeLetter]
+                            }
+                        }
+                    }
+                }
+            }
+            var writeData = (data.reduce((prev, curr, index) => {
+                prev.push(...curr)
+                return prev;
+            }, []).reduce((prev, curr, index) => {
+                prev.push(...curr)
+                return prev;
+            }, []))
+            writeData.forEach((va, ind) => { imageData.data[ind] = va })
+            this.canvasContext.putImageData(imageData, 0, 0)
+            //return buffer;
+        }
+        static makeAxolotlRGB(
+            EDGE_COLOUR = "#000000",
+            MIDDLE_COLOUR = "#000000",
+            MOUTH_COLOUR = "#000000",
+            EYE_COLOUR = "#000000",
+            FIN_START_COLOUR = "#000000",
+            FIN_END_COLOUR = "#000000",
+            TIE_COLOUR = "#000000",
+        ) {
+            EDGE_COLOUR = EDGE_COLOUR.replace("#", "")
+            var edge = [parseInt(EDGE_COLOUR, 16) >> 16 & 255, parseInt(EDGE_COLOUR, 16) >> 8 & 255, parseInt(EDGE_COLOUR, 16) >> 0 & 255, 255]
+            MIDDLE_COLOUR = MIDDLE_COLOUR.replace("#", "")
+            var middle = [parseInt(MIDDLE_COLOUR, 16) >> 16 & 255, parseInt(MIDDLE_COLOUR, 16) >> 8 & 255, parseInt(MIDDLE_COLOUR, 16) >> 0 & 255, 255]
+            MOUTH_COLOUR = MOUTH_COLOUR.replace("#", "")
+            var mouth = [parseInt(MOUTH_COLOUR, 16) >> 16 & 255, parseInt(MOUTH_COLOUR, 16) >> 8 & 255, parseInt(MOUTH_COLOUR, 16) >> 0 & 255, 255]
+            EYE_COLOUR = EYE_COLOUR.replace("#", "")
+            var eye = [parseInt(EYE_COLOUR, 16) >> 16 & 255, parseInt(EYE_COLOUR, 16) >> 8 & 255, parseInt(EYE_COLOUR, 16) >> 0 & 255, 255]
+            FIN_START_COLOUR = FIN_START_COLOUR.replace("#", "")
+            var finStart = [parseInt(FIN_START_COLOUR, 16) >> 16 & 255, parseInt(FIN_START_COLOUR, 16) >> 8 & 255, parseInt(FIN_START_COLOUR, 16) >> 0 & 255, 255]
+            FIN_END_COLOUR = FIN_END_COLOUR.replace("#", "")
+            var finEnd = [parseInt(FIN_END_COLOUR, 16) >> 16 & 255, parseInt(FIN_END_COLOUR, 16) >> 8 & 255, parseInt(FIN_END_COLOUR, 16) >> 0 & 255, 255]
+            TIE_COLOUR = TIE_COLOUR.replace("#", "")
+            var tie = [parseInt(TIE_COLOUR, 16) >> 16 & 255, parseInt(TIE_COLOUR, 16) >> 8 & 255, parseInt(TIE_COLOUR, 16) >> 0 & 255, 255]
+            this.makeAxolotl(edge, middle, mouth, eye, finStart, finEnd, tie, false)
+        }
+    }
+</script>
+<script>
+    let img = document.getElementsByTagName("img")[0];
+    let canvas = document.getElementsByTagName("canvas")[0]
+    canvas.style.height = `${window.innerHeight-1}px`
+    let colourPickers = document.getElementsByTagName("input");
+    let button = document.getElementsByTagName("button")[0];
+    let random = document.getElementsByTagName("button")[1];
+    let loadId = document.getElementsByTagName("button")[2];
+    button.addEventListener("click", () => {
+        var link = document.createElement('a');
+        link.download = `AXOLOTL-${createId()}.png`;
+        link.href = canvas.toDataURL()
+        link.click();
+    });
+    random.addEventListener("click",()=>{
+        colourPickers[0].value = generateRandomRGB()
+        colourPickers[1].value = generateRandomRGB()
+        colourPickers[2].value = generateRandomRGB()
+        colourPickers[3].value = generateRandomRGB()
+        colourPickers[4].value = generateRandomRGB()
+        colourPickers[5].value = generateRandomRGB()
+        colourPickers[6].value = generateRandomRGB()
+        updateColours()
+    });
+    loadId.addEventListener("click",()=>{
+        if (colourPickers[7].value.length == 35) {
+        var values = [...colourPickers[7].value.matchAll(/.{5}/g)].map((a,i)=>{
+            var decimal=parseInt(a[0],36)
+            var rgbDecimal = [decimal >> 16 & 255, decimal >> 8 & 255, decimal & 255]
+            var r = rgbDecimal[0].toString(16)
+            var g = rgbDecimal[1].toString(16)
+            var b = rgbDecimal[2].toString(16)
+            r = (r.length < 2)?"0"+r:r
+            g = (g.length < 2)?"0"+g:g
+            b = (b.length < 2)?"0"+b:b
+            colourPickers[i].value = `#${r + g + b}`
+            return `#${r + g + b}`
+        })
+        //console.log(values)
+        updateColours()
+        colourPickers[7].value = createId()
+    }
+    });
+    [...colourPickers].forEach((v,i) => {
+        if (i == 6) {
+            v.addEventListener("input", updateColours, false);
+            v.addEventListener("change", updateColours, false);
+        }
+    })
+
+    function updateColours() {
+        AxolotlGenerator.makeAxolotlRGB(
+            colourPickers[0].value,
+            colourPickers[1].value,
+            colourPickers[2].value,
+            colourPickers[3].value,
+            colourPickers[4].value,
+            colourPickers[5].value,
+            colourPickers[6].value
+        )
+        colourPickers[7].value = createId()
+    }
+    colourPickers[7].value = createId()
+    function createId() {
+        var a0 = [...parseInt(colourPickers[0].value.split("#")[1],16).toString(36).split("").reverse(),"0","0","0","0"].slice(0,5).reverse().join("")
+        var a1 = [...parseInt(colourPickers[1].value.split("#")[1],16).toString(36).split("").reverse(),"0","0","0","0"].slice(0,5).reverse().join("")
+        var a2 = [...parseInt(colourPickers[2].value.split("#")[1],16).toString(36).split("").reverse(),"0","0","0","0"].slice(0,5).reverse().join("")
+        var a3 = [...parseInt(colourPickers[3].value.split("#")[1],16).toString(36).split("").reverse(),"0","0","0","0"].slice(0,5).reverse().join("")
+        var a4 = [...parseInt(colourPickers[4].value.split("#")[1],16).toString(36).split("").reverse(),"0","0","0","0"].slice(0,5).reverse().join("")
+        var a5 = [...parseInt(colourPickers[5].value.split("#")[1],16).toString(36).split("").reverse(),"0","0","0","0"].slice(0,5).reverse().join("")
+        var a6 = [...parseInt(colourPickers[6].value.split("#")[1],16).toString(36).split("").reverse(),"0","0","0","0"].slice(0,5).reverse().join("")
+        return a0+a1+a2+a3+a4+a5+a6
+    }
+    function generateRandomRGB() {
+        var r = Math.floor(Math.random() * 256).toString(16)
+        var g = Math.floor(Math.random() * 256).toString(16)
+        var b = Math.floor(Math.random() * 256).toString(16)
+        r = (r.length < 2)?"0"+r:r
+        g = (g.length < 2)?"0"+g:g
+        b = (b.length < 2)?"0"+b:b
+        return `#${r + g + b}`
+    }
+    AxolotlGenerator.canvasContext = canvas.getContext("2d")
+    AxolotlGenerator.canvasContext.drawImage(img, 0, 0)
+    AxolotlGenerator.makeAxolotlRGB(
+        "#B0D5FC",
+        "#E2EEFF",
+        "#E2AAC0",
+        "#3A006C",
+        "#D2C2E0",
+        "#D25989",
+        "#9E1020"
+    )
+</script>
