@@ -3,11 +3,13 @@
         background-color: gray;
         margin: 0px;
     }
+
     div * {
         font-size: 30px;
         font-family: 'Courier New', Courier, monospace;
         font-weight: bold;
     }
+
     input[type="color"] {
         width: 200px;
     }
@@ -18,7 +20,9 @@
     style="display:none;float:left;height: 100%;image-rendering: pixelated;"></canvas>
 <div style="float: right;width:50%">
     <div style="float: left;">
-        <center><p>Select Axolotl Colours</p></center>
+        <center>
+            <p>Select Axolotl Colours</p>
+        </center>
         <div>
             <input type="color" id="edge" name="edge" value="#B0D5FC">
             <label for="edge">Head Corners</label>
@@ -48,26 +52,26 @@
             <label for="tie">Tie Colour</label>
         </div>
         <center>
-        <div>
-            <button>
-                Download The Skin!
-            </button>
-        </div>
-        <br>
-        <div>
-            <button>
-                🎲Randomise!
-            </button>
-        </div>
-        <br>
-        <div>
-            <input type="text" style="width: 640px;">
+            <div>
+                <button>
+                    Download The Skin!
+                </button>
+            </div>
             <br>
-            <button>
-                Load Skin From ID
-            </button>
-        </div>
-    </center>
+            <div>
+                <button>
+                    🎲Randomise!
+                </button>
+            </div>
+            <br>
+            <div>
+                <input type="text" style="width: 640px;">
+                <br>
+                <button>
+                    Load Skin From ID
+                </button>
+            </div>
+        </center>
     </div>
 </div>
 <script src="./js/three.js"></script>
@@ -609,8 +613,12 @@
     let alphaCanvas = document.getElementsByTagName("canvas")[1]
     let canvasSize = Math.min(window.innerHeight - 1, window.innerWidth - 1)
     div.style.height = `${window.innerHeight - 1}px`
-    if (window.innerHeight > window.innerWidth) div.style.width = `calc(${window.innerWidth - 1}px`
-    else div.style.width = `calc(100% - ${(window.innerHeight - 1)/2}px)`
+    if (window.innerHeight > window.innerWidth) {
+        div.style.width = `${window.innerWidth - 1}px`
+    } else {
+        div.style.width = `calc(100% - ${(window.innerHeight - 1) / 2}px)`
+        div.style.height = `${window.innerHeight - 1}px`
+    }
     let colourPickers = document.getElementsByTagName("input");
     let button = document.getElementsByTagName("button")[0];
     let random = document.getElementsByTagName("button")[1];
@@ -811,12 +819,12 @@
             offset: [0, 6, 0],
             hidden: false,
             uv: {
-                front: [20/8, 36/12, 1/(64/8), 1/(64/12)],
-                bottom: [28/8, 32/4, 1/(64/8), 1/(64/4)],
-                top: [20/8, 32/4, 1/(64/8), 1/(64/4)],
-                left: [16/4, 36/12, 1/(64/4), 1/(64/12)],
-                right: [28/4, 36/12, 1/(64/4), 1/(64/12)],
-                back: [32/8, 36/12, 1/(64/8), 1/(64/12)],
+                front: [20 / 8, 36 / 12, 1 / (64 / 8), 1 / (64 / 12)],
+                bottom: [28 / 8, 32 / 4, 1 / (64 / 8), 1 / (64 / 4)],
+                top: [20 / 8, 32 / 4, 1 / (64 / 8), 1 / (64 / 4)],
+                left: [16 / 4, 36 / 12, 1 / (64 / 4), 1 / (64 / 12)],
+                right: [28 / 4, 36 / 12, 1 / (64 / 4), 1 / (64 / 12)],
+                back: [32 / 8, 36 / 12, 1 / (64 / 8), 1 / (64 / 12)],
             }
         },
         rightArm: {
@@ -850,12 +858,12 @@
             offset: [2, -6, 0],
             hidden: false,
             uv: {
-                front: [4/4, 52/12, 1/(64/4), 1/(64/12)],
-                bottom: [8/4, 48/4, 1/(64/4), 1/(64/4)],
-                top: [4/4, 48/4, 1/(64/4), 1/(64/4)],
-                left: [0/4, 52/12, 1/(64/4), 1/(64/12)],
-                right: [8/4, 52/12, 1/(64/4), 1/(64/12)],
-                back: [12/4, 52/12, 1/(64/4), 1/(64/12)],
+                front: [4 / 4, 52 / 12, 1 / (64 / 4), 1 / (64 / 12)],
+                bottom: [8 / 4, 48 / 4, 1 / (64 / 4), 1 / (64 / 4)],
+                top: [4 / 4, 48 / 4, 1 / (64 / 4), 1 / (64 / 4)],
+                left: [0 / 4, 52 / 12, 1 / (64 / 4), 1 / (64 / 12)],
+                right: [8 / 4, 52 / 12, 1 / (64 / 4), 1 / (64 / 12)],
+                back: [12 / 4, 52 / 12, 1 / (64 / 4), 1 / (64 / 12)],
             }
         },
         leftLeg: {
@@ -863,12 +871,12 @@
             offset: [-2, -6, 0],
             hidden: false,
             uv: {
-                front: [4/4, 36/12, 1/(64/4), 1/(64/12)],
-                bottom: [8/4, 32/4, 1/(64/4), 1/(64/4)],
-                top: [4/4, 32/4, 1/(64/4), 1/(64/4)],
-                left: [0/4, 36/12, 1/(64/4), 1/(64/12)],
-                right: [8/4, 36/12, 1/(64/4), 1/(64/12)],
-                back: [12/4, 36/12, 1/(64/4), 1/(64/12)],
+                front: [4 / 4, 36 / 12, 1 / (64 / 4), 1 / (64 / 12)],
+                bottom: [8 / 4, 32 / 4, 1 / (64 / 4), 1 / (64 / 4)],
+                top: [4 / 4, 32 / 4, 1 / (64 / 4), 1 / (64 / 4)],
+                left: [0 / 4, 36 / 12, 1 / (64 / 4), 1 / (64 / 12)],
+                right: [8 / 4, 36 / 12, 1 / (64 / 4), 1 / (64 / 12)],
+                back: [12 / 4, 36 / 12, 1 / (64 / 4), 1 / (64 / 12)],
             }
         }
     }
@@ -1013,9 +1021,9 @@
             meshes.push(mesh)
             scene.add(mesh);
         }
-        renderer = new THREE.WebGLRenderer({ antialias: true , alpha: true});
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(canvasSize/2, canvasSize);
+        renderer.setSize(canvasSize / 2, canvasSize);
         document.body.before(canvas, renderer.domElement);
         renderer.domElement.style.float = "left"
         controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -1030,13 +1038,16 @@
     }
     function onWindowResize() {
         let canvasSize = Math.min(window.innerHeight - 1, window.innerWidth - 1)
-        div.style.height = `${window.innerHeight - 1}px`
-        if (window.innerHeight > window.innerWidth) div.style.width = `${window.innerWidth - 1}px`
-        else div.style.width = `calc(100% - ${(window.innerHeight - 1)/2}px)`
+        if (window.innerHeight > window.innerWidth) {
+            div.style.width = `${window.innerWidth - 1}px`
+        } else {
+            div.style.width = `calc(100% - ${(window.innerHeight - 1) / 2}px)`
+            div.style.height = `${window.innerHeight - 1}px`
+        }
         camera.aspect = 0.5;
         camera.updateProjectionMatrix();
         controls.update()
-        renderer.setSize(canvasSize/2, canvasSize);
+        renderer.setSize(canvasSize / 2, canvasSize);
     }
     function animate() {
         requestAnimationFrame(animate);
