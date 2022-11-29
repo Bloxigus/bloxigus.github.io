@@ -8,6 +8,7 @@ const drawStartPos = new THREE.Vector2();
 let allMaterials = []
 const EPS = 1e-3;
 let size = 0.125
+let outerIncrease = 0
 let meshes = []
 let updates = []
 let arms = []
@@ -88,7 +89,7 @@ function init() {
     for (let cube in outerLayerCubes) {
         let cube3 = outerLayerCubes[cube]
         if (cube3.hidden) continue
-        var opts = { transparent: true, opacity: 1 }
+        var opts = { transparent: true, opacity: 1 ,alphaTest: 0.85, side: 2, depthWrite: true}
         let materials = [new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts)];
         allMaterials.push(materials)
         updates.push(() => {
@@ -149,7 +150,7 @@ function init() {
             materials[5].map.repeat.set(sizeX, sizeY)
             materials[5].map.magFilter = 1003
         });
-        mesh = new THREE.Mesh(new THREE.BoxGeometry(sizeMult * cube3.size[0], sizeMult * cube3.size[1], sizeMult * cube3.size[2]), materials);
+        mesh = new THREE.Mesh(new THREE.BoxGeometry(sizeMult * (cube3.size[0] + outerIncrease), sizeMult * (cube3.size[1] + outerIncrease), sizeMult * (cube3.size[2] + outerIncrease)), materials);
         mesh.position.set(posMult * cube3.offset[0], posMult * cube3.offset[1] + yIncrease, posMult * cube3.offset[2])
         meshes.push(mesh)
         if (cube.includes("Arm")) arms.push([cube,mesh,true,cube3.offset.map(a=>a*posMult)]);

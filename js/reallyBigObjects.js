@@ -608,7 +608,7 @@ let cubes = {
 }
 let outerLayerCubes = {
     head: {
-        size: [8.5, 8.5, 8.5],
+        size: [9, 9, 9],
         offset: [0, 16, 0],
         hidden: false,
         uv: {
