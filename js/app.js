@@ -1,6 +1,7 @@
 let div = document.getElementsByTagName("div")[0]
 let img = document.getElementsByTagName("img")[0];
 let imgSlim = document.getElementsByTagName("img")[1];
+let customImg = document.getElementsByTagName("img")[2];
 let canvas = document.getElementsByTagName("canvas")[0]
 let slimCheck = document.getElementsByTagName("input")[0]
 let slim = false
@@ -14,13 +15,23 @@ if (window.innerHeight > window.innerWidth) {
     div.style.width = `calc(100% - ${(window.innerHeight - 1) / 2}px)`
     div.style.height = `${window.innerHeight - 1}px`
 }
+let isFileSelected = false;
 let colourPickers = [...document.getElementsByTagName("input")].filter((_, i) => { return i != 0 });
 let button = document.getElementsByTagName("button")[0];
 let random = document.getElementsByTagName("button")[1];
 let loadId = document.getElementsByTagName("button")[2];
+let fileChooser = document.getElementsByTagName("input")[9];
+let loadFile = document.getElementsByTagName("button")[3];
+let lastFileUrl = ""
+loadFile.addEventListener("click", () => {
+    fileChooser.click()
+    fileChooser.addEventListener("change", (a) => {
+        loadSkinFile()
+    })
+})
 slimCheck.addEventListener("change", () => {
     setSlim(slimCheck.checked)
-    updateColours()
+    if (!isFileSelected) updateColours()
 })
 button.addEventListener("click", () => {
     var link = document.createElement('a');
@@ -29,6 +40,7 @@ button.addEventListener("click", () => {
     link.click();
 });
 random.addEventListener("click", () => {
+    isFileSelected = false
     colourPickers[0].value = generateRandomRGB()
     colourPickers[1].value = generateRandomRGB()
     colourPickers[2].value = generateRandomRGB()
@@ -40,6 +52,7 @@ random.addEventListener("click", () => {
 });
 loadId.addEventListener("click", () => {
     if (colourPickers[7].value.length == 36) {
+        isFileSelected = false
         var isSlim = /[S]/.test(colourPickers[7].value.split("")[35]);
         [...colourPickers[7].value.matchAll(/.{5}/g)].map((a, i) => {
             var decimal = parseInt(a[0], 36)
@@ -56,6 +69,7 @@ loadId.addEventListener("click", () => {
         updateColours()
         colourPickers[7].value = createId()
     } else if (colourPickers[7].value.length == 35) {
+        isFileSelected = false
         var isSlim = false;
         [...colourPickers[7].value.matchAll(/.{5}/g)].map((a, i) => {
             var decimal = parseInt(a[0], 36)
@@ -74,13 +88,14 @@ loadId.addEventListener("click", () => {
     }
 });
 [...colourPickers].forEach((v, i) => {
-    if (i != 7) {
+    if (i < 7) {
         v.addEventListener("input", updateColours, false);
         v.addEventListener("change", updateColours, false);
     }
 })
 
 function updateColours() {
+    isFileSelected = false
     AxolotlGenerator.makeAxolotlRGB(
         colourPickers[0].value,
         colourPickers[1].value,
@@ -125,3 +140,18 @@ AxolotlGenerator.makeAxolotlRGB(
     "#D25989",
     "#9E1020"
 )
+function loadSkinFile() {
+    var reader = new FileReader();
+    reader.onload = () => {
+        isFileSelected = true
+        lastFileUrl = reader.result
+        customImg.src = reader.result
+        customImg.onload = () => {
+            AxolotlGenerator.canvasContext.clearRect(0, 0, 64, 64)
+            AxolotlGenerator.canvasContext.drawImage(customImg, 0, 0)
+        }
+        setupCanvasDrawing()
+    }
+    reader.readAsDataURL(fileChooser.files[0], "UTF-8")
+    fileChooser.value = ""
+}

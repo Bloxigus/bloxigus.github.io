@@ -11,8 +11,8 @@ class AxolotlGenerator {
         swapIfBad = true,
         slim = false
     ) {
-        this.canvasContext.clearRect(0,0,64,64)
-        this.canvasContext.drawImage((slim)?imgSlim:img,0,0);
+        this.canvasContext.clearRect(0, 0, 64, 64)
+        this.canvasContext.drawImage((slim) ? imgSlim : img, 0, 0);
         if (swapIfBad && (fin1[0] + fin1[1] + fin1[2]) < (fin5[0] + fin5[1] + fin5[2])) {
             [fin1, fin5] = [fin5, fin1]
         }
@@ -50,10 +50,10 @@ class AxolotlGenerator {
         for (var location in locations) {
             for (var loc2 in locations[location]) {
                 var type = location
-                var d = ((slim)?colourLocationsSlim:colourLocations)[type]
+                var d = ((slim) ? colourLocationsSlim : colourLocations)[type]
                 var width = 2 * d["side"][0].length + 2 * d["front"][0].length
                 var height = d["front"].length + d["top"].length
-                var pos = ((slim)?locationsSlim:locations)[location][loc2]
+                var pos = ((slim) ? locationsSlim : locations)[location][loc2]
                 var innerLocations = {
                     top: [d["side"][0].length, 0, d["side"][0].length + d["top"][0].length - 1, d["top"].length - 1],
                     base: [d["side"][0].length + d["top"][0].length, 0, 2 * d["side"][0].length + d["top"][0].length - 1, d["top"].length - 1],
@@ -114,6 +114,6 @@ class AxolotlGenerator {
         var finEnd = [parseInt(FIN_END_COLOUR, 16) >> 16 & 255, parseInt(FIN_END_COLOUR, 16) >> 8 & 255, parseInt(FIN_END_COLOUR, 16) >> 0 & 255, 255]
         TIE_COLOUR = TIE_COLOUR.replace("#", "")
         var tie = [parseInt(TIE_COLOUR, 16) >> 16 & 255, parseInt(TIE_COLOUR, 16) >> 8 & 255, parseInt(TIE_COLOUR, 16) >> 0 & 255, 255]
-        this.makeAxolotl(edge, middle, mouth, eye, finStart, finEnd, tie, false,SLIM_SKIN)
+        this.makeAxolotl(edge, middle, mouth, eye, finStart, finEnd, tie, false, SLIM_SKIN)
     }
 }

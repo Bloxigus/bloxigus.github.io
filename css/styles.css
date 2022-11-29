@@ -11,6 +11,9 @@ div * {
 input[type="color"] {
     width: 200px;
 }
+input[type="file"] {
+    display: none;
+}
 input.idBox {
     width: 660px;
 }

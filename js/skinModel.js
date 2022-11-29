@@ -15,7 +15,7 @@ let arms = []
 let posMult = 10
 let yIncrease = -40
 let sizeMult = 10
-let directionalLight,ambientLight
+let directionalLight, ambientLight
 let meshType = "MeshLambertMaterial"
 init();
 setupCanvasDrawing();
@@ -27,10 +27,10 @@ function init() {
     for (let cube in cubes) {
         let cube3 = cubes[cube]
         if (cube3.hidden) continue
-        let materials = [new THREE[meshType](), new THREE[meshType](),new THREE[meshType](),new THREE[meshType](),new THREE[meshType](),new THREE[meshType]()];
+        let materials = [new THREE[meshType](), new THREE[meshType](), new THREE[meshType](), new THREE[meshType](), new THREE[meshType](), new THREE[meshType]()];
         allMaterials.push(materials)
         updates.push(() => {
-            let cube2 = (slim?cubesSlim:cubes)[cube]
+            let cube2 = (slim ? cubesSlim : cubes)[cube]
             sizeX = cube2.uv.right[2]
             sizeY = cube2.uv.right[3]
             sizeU = cube2.uv.right[0]
@@ -59,9 +59,12 @@ function init() {
             sizeY = cube2.uv.bottom[3]
             sizeU = cube2.uv.bottom[0]
             sizeV = cube2.uv.bottom[1] + 1
-            materials[3].map = new THREE.CanvasTexture(canvas)
-            materials[3].map.offset.set(sizeU * sizeX, 1 - sizeV * sizeY)
-            materials[3].map.repeat.set(sizeX, sizeY)
+            var texture = new THREE.CanvasTexture(canvas);
+            texture.repeat.y = -1;
+            texture.wrapT = THREE.RepeatWrapping;
+            materials[3].map = texture;
+            materials[3].map.offset.set(sizeU * sizeX, 1 + sizeV * sizeY)
+            materials[3].map.repeat.set(sizeX, -sizeY)
             materials[3].map.magFilter = 1003
             sizeX = cube2.uv.front[2]
             sizeY = cube2.uv.front[3]
@@ -83,17 +86,17 @@ function init() {
         mesh = new THREE.Mesh(new THREE.BoxGeometry(sizeMult * cube3.size[0], sizeMult * cube3.size[1], sizeMult * cube3.size[2]), materials);
         mesh.position.set(posMult * cube3.offset[0], posMult * cube3.offset[1] + yIncrease, posMult * cube3.offset[2])
         meshes.push(mesh)
-        if (cube.includes("Arm")) arms.push([cube,mesh,false,cube3.offset.map(a=>a*posMult)]);
+        if (cube.includes("Arm")) arms.push([cube, mesh, false, cube3.offset.map(a => a * posMult)]);
         scene.add(mesh);
     }
     for (let cube in outerLayerCubes) {
         let cube3 = outerLayerCubes[cube]
         if (cube3.hidden) continue
-        var opts = { transparent: true, opacity: 1 ,alphaTest: 0.85, side: 2, depthWrite: true}
+        var opts = { transparent: true, opacity: 1, alphaTest: 0.85, side: 2, depthWrite: true }
         let materials = [new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts)];
         allMaterials.push(materials)
         updates.push(() => {
-            let cube2 = (slim?outerLayerCubesSlim:outerLayerCubes)[cube]
+            let cube2 = (slim ? outerLayerCubesSlim : outerLayerCubes)[cube]
             sizeX = cube2.uv.right[2] + 0
             sizeY = cube2.uv.right[3] + 0
             sizeU = cube2.uv.right[0] - 0
@@ -125,10 +128,12 @@ function init() {
             sizeY = cube2.uv.bottom[3] + 0
             sizeU = cube2.uv.bottom[0] - 0
             sizeV = cube2.uv.bottom[1] + 1 - 0
-            materials[3].transparant = true;
-            materials[3].map = new THREE.CanvasTexture(canvas)
-            materials[3].map.offset.set(sizeU * sizeX, 1 - sizeV * sizeY)
-            materials[3].map.repeat.set(sizeX, sizeY)
+            var texture = new THREE.CanvasTexture(canvas);
+            texture.repeat.y = -1;
+            texture.wrapT = THREE.RepeatWrapping;
+            materials[3].map = texture;
+            materials[3].map.offset.set(sizeU * sizeX, 1 + sizeV * sizeY)
+            materials[3].map.repeat.set(sizeX, -sizeY)
             materials[3].map.magFilter = 1003
             sizeX = cube2.uv.front[2] + 0
             sizeY = cube2.uv.front[3] + 0
@@ -153,34 +158,34 @@ function init() {
         mesh = new THREE.Mesh(new THREE.BoxGeometry(sizeMult * (cube3.size[0] + outerIncrease), sizeMult * (cube3.size[1] + outerIncrease), sizeMult * (cube3.size[2] + outerIncrease)), materials);
         mesh.position.set(posMult * cube3.offset[0], posMult * cube3.offset[1] + yIncrease, posMult * cube3.offset[2])
         meshes.push(mesh)
-        if (cube.includes("Arm")) arms.push([cube,mesh,true,cube3.offset.map(a=>a*posMult)]);
+        if (cube.includes("Arm")) arms.push([cube, mesh, true, cube3.offset.map(a => a * posMult)]);
         scene.add(mesh);
     }
-    directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-    directionalLight.position.set( 0, 0, 500 );
+    directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(0, 0, 500);
     directionalLight.castShadow = true;
-    scene.add( directionalLight );
-    ambientLight = new THREE.AmbientLight( 0xffffff, 0.5 );
-    ambientLight.position.set( 0, 0, 500 );
+    scene.add(directionalLight);
+    ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    ambientLight.position.set(0, 0, 500);
     ambientLight.castShadow = true;
-    scene.add( ambientLight );
+    scene.add(ambientLight);
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(canvasSize / 2, canvasSize);
     document.body.before(canvas, renderer.domElement);
     renderer.domElement.style.float = "left"
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableZoom = false;
-    controls.enablePan = false;
+    controls.enableZoom = true;
+    controls.enablePan = true;
     controls.enableDamping = false;
     controls.rotateSpeed = 1;
     window.addEventListener('resize', onWindowResize);
 }
 function setSlim(_slim) {
     slim = _slim;
-    arms.forEach(v=>{
-        if (!v[2]) v[1].geometry = new THREE.BoxGeometry((slim?30:40),120,40)
-        else v[1].geometry = new THREE.BoxGeometry((slim?35:45),125,45)
+    arms.forEach(v => {
+        if (!v[2]) v[1].geometry = new THREE.BoxGeometry((slim ? 30 : 40), 120, 40)
+        else v[1].geometry = new THREE.BoxGeometry((slim ? 35 : 45), 125, 45)
         if (slim) {
             v[1].position.set(posMult * cubesSlim[v[0]].offset[0], posMult * cubesSlim[v[0]].offset[1] + yIncrease, posMult * cubesSlim[v[0]].offset[2])
         } else {
@@ -210,7 +215,7 @@ var angle = 0
 function animate() {
     requestAnimationFrame(animate);
     angle += 0.02
-    directionalLight.position.set(camera.position.x,camera.position.y,camera.position.z)
-    ambientLight.position.set(camera.position.x,camera.position.y,camera.position.z)
+    directionalLight.position.set(camera.position.x, camera.position.y, camera.position.z)
+    ambientLight.position.set(camera.position.x, camera.position.y, camera.position.z)
     renderer.render(scene, camera);
 }
