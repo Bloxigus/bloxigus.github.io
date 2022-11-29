@@ -12,6 +12,7 @@
 //     " ": "transparent",
 //     "X": "base"
 // }
+const EPS = 1e-3;
 var colourLocations = {
     head: {
         top: [
@@ -541,7 +542,7 @@ let cubes = {
         }
     },
     body: {
-        size: [8, 12, 4],
+        size: [8 + EPS, 12 + EPS, 4 + EPS],
         offset: [0, 6, 0],
         hidden: false,
         uv: {
@@ -621,7 +622,7 @@ let outerLayerCubes = {
         }
     },
     body: {
-        size: [8.5, 12.5, 4.5],
+        size: [8.5 + EPS, 12.5 + EPS, 4.5 + EPS],
         offset: [0, 6, 0],
         hidden: false,
         uv: {
@@ -660,7 +661,7 @@ let outerLayerCubes = {
         }
     },
     rightLeg: {
-        size: [4.5, 12.5, 4.5],
+        size: [4.5 + EPS, 12.5 + EPS, 4.5 + EPS],
         offset: [2, -6, 0],
         hidden: false,
         uv: {

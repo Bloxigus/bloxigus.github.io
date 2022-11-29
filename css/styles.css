@@ -32,3 +32,6 @@ canvas#can {
 img {
     display: none;
 }
+br {
+    line-height: 10px;
+}

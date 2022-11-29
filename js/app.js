@@ -18,15 +18,21 @@ if (window.innerHeight > window.innerWidth) {
 let isFileSelected = false;
 let colourPickers = [...document.getElementsByTagName("input")].filter((_, i) => { return i != 0 });
 let button = document.getElementsByTagName("button")[0];
-let random = document.getElementsByTagName("button")[1];
-let loadId = document.getElementsByTagName("button")[2];
+let copyRender = document.getElementsByTagName("button")[1];
+let random = document.getElementsByTagName("button")[2];
+let loadId = document.getElementsByTagName("button")[3];
 let fileChooser = document.getElementsByTagName("input")[9];
-let loadFile = document.getElementsByTagName("button")[3];
+let loadFile = document.getElementsByTagName("button")[4];
 let lastFileUrl = ""
 loadFile.addEventListener("click", () => {
     fileChooser.click()
     fileChooser.addEventListener("change", (a) => {
         loadSkinFile()
+    })
+})
+copyRender.addEventListener("click", () => {
+    renderer.domElement.toBlob((blob)=>{
+        navigator.clipboard.write([new ClipboardItem({[blob.type]:blob})])
     })
 })
 slimCheck.addEventListener("change", () => {
@@ -144,14 +150,16 @@ function loadSkinFile() {
     var reader = new FileReader();
     reader.onload = () => {
         isFileSelected = true
+        colourPickers[7].value = ""
         lastFileUrl = reader.result
-        customImg.src = reader.result
         customImg.onload = () => {
             AxolotlGenerator.canvasContext.clearRect(0, 0, 64, 64)
             AxolotlGenerator.canvasContext.drawImage(customImg, 0, 0)
         }
+        customImg.src = reader.result
+        fileChooser.value = ""
         setupCanvasDrawing()
     }
     reader.readAsDataURL(fileChooser.files[0], "UTF-8")
-    fileChooser.value = ""
+    
 }

@@ -6,7 +6,6 @@ let { BoxBufferGeometry,
 let camera, scene, renderer, mesh, material;
 const drawStartPos = new THREE.Vector2();
 let allMaterials = []
-const EPS = 1e-3;
 let size = 0.125
 let outerIncrease = 0
 let meshes = []
@@ -22,7 +21,7 @@ setupCanvasDrawing();
 animate();
 function init() {
     camera = new THREE.PerspectiveCamera(50, 0.5, 1, 2000);
-    camera.position.z = 500;
+    camera.position.z = 450;
     scene = new THREE.Scene();
     for (let cube in cubes) {
         let cube3 = cubes[cube]
@@ -92,7 +91,7 @@ function init() {
     for (let cube in outerLayerCubes) {
         let cube3 = outerLayerCubes[cube]
         if (cube3.hidden) continue
-        var opts = { transparent: true, opacity: 1, alphaTest: 0.85, side: 2, depthWrite: true }
+        var opts = { transparent: true, opacity: 1, alphaTest: Number.EPSILON, side: 2, depthWrite: true }
         let materials = [new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts), new THREE[meshType](opts)];
         allMaterials.push(materials)
         updates.push(() => {
@@ -101,7 +100,6 @@ function init() {
             sizeY = cube2.uv.right[3] + 0
             sizeU = cube2.uv.right[0] - 0
             sizeV = cube2.uv.right[1] + 1 - 0
-            materials[0].transparant = true;
             materials[0].map = new THREE.CanvasTexture(canvas)
             materials[0].map.offset.set(sizeU * sizeX, 1 - sizeV * sizeY)
             materials[0].map.repeat.set(sizeX, sizeY)
@@ -110,7 +108,6 @@ function init() {
             sizeY = cube2.uv.left[3] + 0
             sizeU = cube2.uv.left[0] - 0
             sizeV = cube2.uv.left[1] + 1 - 0
-            materials[1].transparant = true;
             materials[1].map = new THREE.CanvasTexture(canvas)
             materials[1].map.offset.set(sizeU * sizeX, 1 - sizeV * sizeY)
             materials[1].map.repeat.set(sizeX, sizeY)
@@ -119,7 +116,6 @@ function init() {
             sizeY = cube2.uv.top[3] + 0
             sizeU = cube2.uv.top[0] - 0
             sizeV = cube2.uv.top[1] + 1 - 0
-            materials[2].transparant = true;
             materials[2].map = new THREE.CanvasTexture(canvas)
             materials[2].map.offset.set(sizeU * sizeX, 1 - sizeV * sizeY)
             materials[2].map.repeat.set(sizeX, sizeY)
@@ -139,7 +135,6 @@ function init() {
             sizeY = cube2.uv.front[3] + 0
             sizeU = cube2.uv.front[0] - 0
             sizeV = cube2.uv.front[1] + 1 - 0
-            materials[4].transparant = true;
             materials[4].map = new THREE.CanvasTexture(canvas)
             materials[4].map.offset.set(sizeU * sizeX, 1 - sizeV * sizeY)
             materials[4].map.repeat.set(sizeX, sizeY)
@@ -148,8 +143,7 @@ function init() {
             sizeY = cube2.uv.back[3] + 0
             sizeU = cube2.uv.back[0] - 0.
             sizeV = cube2.uv.back[1] + 1 - 0
-            materials[5].transparant = true;
-            materials[0].premultiplyAlpha = true;
+            // materials[0].premultiplyAlpha = true;
             materials[5].map = new THREE.CanvasTexture(canvas)
             materials[5].map.offset.set(sizeU * sizeX, 1 - sizeV * sizeY)
             materials[5].map.repeat.set(sizeX, sizeY)
@@ -161,15 +155,15 @@ function init() {
         if (cube.includes("Arm")) arms.push([cube, mesh, true, cube3.offset.map(a => a * posMult)]);
         scene.add(mesh);
     }
-    directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(0, 0, 500);
+    directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    directionalLight.position.set(0, 0, 450);
     directionalLight.castShadow = true;
     scene.add(directionalLight);
-    ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     ambientLight.position.set(0, 0, 500);
     ambientLight.castShadow = true;
     scene.add(ambientLight);
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, logarithmicDepthBuffer: true ,preserveDrawingBuffer :true});
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(canvasSize / 2, canvasSize);
     document.body.before(canvas, renderer.domElement);
