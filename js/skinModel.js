@@ -213,3 +213,4 @@ function animate() {
     ambientLight.position.set(camera.position.x, camera.position.y, camera.position.z)
     renderer.render(scene, camera);
 }
+runWhenDone()

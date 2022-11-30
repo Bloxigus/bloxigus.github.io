@@ -69,7 +69,7 @@ function loadIDString(id) {
     if (id.length == 36) {
         isFileSelected = false
         var isSlim = /[S]/.test(colourPickers[7].value.split("")[35]);
-        [...colourPickers[7].value.matchAll(/.{5}/g)].map((a, i) => {
+        [...id.matchAll(/.{5}/g)].map((a, i) => {
             var decimal = parseInt(a[0], 36)
             var rgbDecimal = [decimal >> 16 & 255, decimal >> 8 & 255, decimal & 255]
             var r = rgbDecimal[0].toString(16)
@@ -86,7 +86,7 @@ function loadIDString(id) {
     } else if (id.length == 35) {
         isFileSelected = false
         var isSlim = false;
-        [...colourPickers[7].value.matchAll(/.{5}/g)].map((a, i) => {
+        [...id.matchAll(/.{5}/g)].map((a, i) => {
             var decimal = parseInt(a[0], 36)
             var rgbDecimal = [decimal >> 16 & 255, decimal >> 8 & 255, decimal & 255]
             var r = rgbDecimal[0].toString(16)
@@ -117,8 +117,10 @@ function updateColours() {
     colourPickers[7].value = createId()
     setupCanvasDrawing()
 }
+function runWhenDone() {
 if (document.location.hash.length != 0 || document.location.search.length != 0) {
-    loadIDString((document.location.hash.length!=0)?document.location.hash:document.location.search)
+    loadIDString(((document.location.hash.length!=0)?document.location.hash:document.location.search).replace(/[#?]{1}/,""))
+}
 }
 colourPickers[7].value = createId()
 function createId() {
