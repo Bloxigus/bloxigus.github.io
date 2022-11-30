@@ -57,7 +57,16 @@ random.addEventListener("click", () => {
     updateColours()
 });
 loadId.addEventListener("click", () => {
-    if (colourPickers[7].value.length == 36) {
+    loadIDString(colourPickers[7].value)
+});
+[...colourPickers].forEach((v, i) => {
+    if (i < 7) {
+        v.addEventListener("input", updateColours, false);
+        v.addEventListener("change", updateColours, false);
+    }
+})
+function loadIDString(id) {
+    if (id.length == 36) {
         isFileSelected = false
         var isSlim = /[S]/.test(colourPickers[7].value.split("")[35]);
         [...colourPickers[7].value.matchAll(/.{5}/g)].map((a, i) => {
@@ -74,7 +83,7 @@ loadId.addEventListener("click", () => {
         setSlim(isSlim)
         updateColours()
         colourPickers[7].value = createId()
-    } else if (colourPickers[7].value.length == 35) {
+    } else if (id.length == 35) {
         isFileSelected = false
         var isSlim = false;
         [...colourPickers[7].value.matchAll(/.{5}/g)].map((a, i) => {
@@ -92,14 +101,7 @@ loadId.addEventListener("click", () => {
         updateColours()
         colourPickers[7].value = createId()
     }
-});
-[...colourPickers].forEach((v, i) => {
-    if (i < 7) {
-        v.addEventListener("input", updateColours, false);
-        v.addEventListener("change", updateColours, false);
-    }
-})
-
+}
 function updateColours() {
     isFileSelected = false
     AxolotlGenerator.makeAxolotlRGB(
@@ -114,6 +116,9 @@ function updateColours() {
     )
     colourPickers[7].value = createId()
     setupCanvasDrawing()
+}
+if (document.location.hash.length != 0 || document.location.search.length != 0) {
+    loadIDString((document.location.hash.length!=0)?document.location.hash:document.location.search)
 }
 colourPickers[7].value = createId()
 function createId() {
