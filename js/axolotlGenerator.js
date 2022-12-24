@@ -1,5 +1,6 @@
 class AxolotlGenerator {
     static canvasContext;
+    static arrayBuffer = new Uint8ClampedArray(4* 64 * 64);
     static makeAxolotl(
         edge = [Math.random() * 255, Math.random() * 255, Math.random() * 255, 255],
         middle = [Math.random() * 255, Math.random() * 255, Math.random() * 255, 255],
@@ -51,8 +52,6 @@ class AxolotlGenerator {
             for (var loc2 in locations[location]) {
                 var type = location
                 var d = ((slim) ? colourLocationsSlim : colourLocations)[type]
-                var width = 2 * d["side"][0].length + 2 * d["front"][0].length
-                var height = d["front"].length + d["top"].length
                 var pos = ((slim) ? locationsSlim : locations)[location][loc2]
                 var innerLocations = {
                     top: [d["side"][0].length, 0, d["side"][0].length + d["top"][0].length - 1, d["top"].length - 1],
@@ -88,6 +87,7 @@ class AxolotlGenerator {
             return prev;
         }, []))
         writeData.forEach((va, ind) => { imageData.data[ind] = va })
+        this.arrayBuffer.set(imageData.data)
         this.canvasContext.putImageData(imageData, 0, 0)
     }
     static makeAxolotlRGB(

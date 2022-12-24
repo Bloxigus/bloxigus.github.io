@@ -1,4 +1,4 @@
-let div = document.getElementsByTagName("div")[0]
+let div = document.getElementsByTagName("div")[1]
 let img = document.getElementsByTagName("img")[0];
 let imgSlim = document.getElementsByTagName("img")[1];
 let customImg = document.getElementsByTagName("img")[2];
@@ -24,11 +24,11 @@ let loadId = document.getElementsByTagName("button")[3];
 let fileChooser = document.getElementsByTagName("input")[9];
 let loadFile = document.getElementsByTagName("button")[4];
 let lastFileUrl = ""
+fileChooser.addEventListener("change", () => {
+    loadSkinFile()
+})
 loadFile.addEventListener("click", () => {
     fileChooser.click()
-    fileChooser.addEventListener("change", (a) => {
-        loadSkinFile()
-    })
 })
 copyRender.addEventListener("click", () => {
     renderer.domElement.toBlob((blob)=>{
@@ -37,7 +37,8 @@ copyRender.addEventListener("click", () => {
 })
 slimCheck.addEventListener("change", () => {
     setSlim(slimCheck.checked)
-    if (!isFileSelected) updateColours()
+    if (!isFileSelected) updateColours(true)
+    else setupCanvasDrawing(true)
 })
 button.addEventListener("click", () => {
     var link = document.createElement('a');
@@ -61,8 +62,8 @@ loadId.addEventListener("click", () => {
 });
 [...colourPickers].forEach((v, i) => {
     if (i < 7) {
-        v.addEventListener("input", updateColours, false);
-        v.addEventListener("change", updateColours, false);
+        v.addEventListener("input", ()=>{updateColours(false)}, false);
+        v.addEventListener("change", ()=>{updateColours(false)}, false);
     }
 })
 function loadIDString(id) {
@@ -102,7 +103,7 @@ function loadIDString(id) {
         colourPickers[7].value = createId()
     }
 }
-function updateColours() {
+function updateColours(slimChange=false) {
     isFileSelected = false
     AxolotlGenerator.makeAxolotlRGB(
         colourPickers[0].value,
@@ -115,7 +116,7 @@ function updateColours() {
         slim
     )
     colourPickers[7].value = createId()
-    setupCanvasDrawing()
+    setupCanvasDrawing(slimChange)
 }
 function runWhenDone() {
 if (document.location.hash.length != 0 || document.location.search.length != 0) {
@@ -162,10 +163,11 @@ function loadSkinFile() {
         customImg.onload = () => {
             AxolotlGenerator.canvasContext.clearRect(0, 0, 64, 64)
             AxolotlGenerator.canvasContext.drawImage(customImg, 0, 0)
+            AxolotlGenerator.arrayBuffer.set(AxolotlGenerator.canvasContext.getImageData(0,0,64,64).data)
+            setupCanvasDrawing()
         }
         customImg.src = reader.result
         fileChooser.value = ""
-        setupCanvasDrawing()
     }
     reader.readAsDataURL(fileChooser.files[0], "UTF-8")
     
