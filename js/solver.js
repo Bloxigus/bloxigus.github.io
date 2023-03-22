@@ -438,8 +438,8 @@ function beautifyEquation(equation="") {
     .replaceAll("/", OPERATION_COLOUR + " \u00f7 " + NUMBER_COLOUR)
     .replaceAll("+", OPERATION_COLOUR + " \u002b " + NUMBER_COLOUR)
     .replaceAll("x", OPERATION_COLOUR + " \u00d7 " + NUMBER_COLOUR)
-    .replaceAll(")", BRACKET_COLOUR + ")</sup>" + NUMBER_COLOUR)
-    .replaceAll("^", OPERATION_COLOUR + "^" + "<sup>"+NUMBER_COLOUR)
+    .replaceAll(")", BRACKET_COLOUR + ")" + NUMBER_COLOUR)
+    .replaceAll("^", OPERATION_COLOUR + "^" + ""+NUMBER_COLOUR)
     .replaceAll(/[\[\]]/g,"")
 }
 function addInputElement() {
