@@ -399,14 +399,25 @@
             document.getElementsByClassName("box")[0].style.width = `${100*(ev.data.progress/ev.data.max)}%`
         }
     }
+    let hasRunRunning = false;
+    let latestJobId = -1;
     function solveNumberGame(target, values) {
+        if (hasRunRunning) return;
         let jobId = jobIdGenerator()
-        worker.postMessage({ target, values, jobId })
+        hasRunRunning = true;
+        latestJobId = jobId;
+        worker.postMessage({ target, values, jobId, action: "solve" })
         let promise = new Promise((resolve) => {
+            hasRunRunning = false;
             jobs[jobId] = resolve;
         })
         return promise
     }
+    function cancelLatestRun() {
+        if (!hasRunRunning) return;
+        worker.postMessage({ action: "end", latestJobId })
+    }
+    window.cancelLatestRun = cancelLatestRun;
     window.solveNumberGame = solveNumberGame;
     solveNumberGame.jobs = jobs;
     solveNumberGame.worker = worker
