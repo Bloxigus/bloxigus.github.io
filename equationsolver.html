@@ -1,0 +1,36 @@
+<head>
+    <script src="./script.js"></script>
+    <style>
+        .back {
+            width: 100%;
+            height: 20px;
+            background-color: darkgray;
+        }
+
+        .box {
+            height: 20px;
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <p>
+    </p>
+    <div id="numbers">
+        <label for="target">Target: </label><input type="number" name="target"><br>
+        <input class="__number" type="number" id="3"><button tabindex="-1" id="4">x</button><br><input class="__number"
+            type="number" id="6"><button tabindex="-1" id="7">x</button><br>
+    </div>
+    <button onclick="addInputElement()">add another number</button>
+    <br>
+    <br>
+    <div class="back">
+        <div class="box" style="width: 100%;"></div>
+    </div>
+    <button onclick="doGameSolve()">click me</button>
+    <div id="result">(1 + 1) = 2</div>
+    <script>
+        addInputElement()
+    </script>
+</body>
