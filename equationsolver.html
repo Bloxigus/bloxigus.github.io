@@ -19,18 +19,15 @@
     </p>
     <div id="numbers">
         <label for="target">Target: </label><input type="number" name="target"><br>
-        <input class="__number" type="number" id="3"><button tabindex="-1" id="4">x</button><br><input class="__number"
-            type="number" id="6"><button tabindex="-1" id="7">x</button><br>
     </div>
     <button onclick="addInputElement()">add another number</button>
-    <button onclick="cancelLatestRun()">click to cancel</button>
     <br>
     <br>
     <div class="back">
         <div class="box" style="width: 100%;"></div>
     </div>
-    <button onclick="doGameSolve()">click me</button>
-    <div id="result">(1 + 1) = 2</div>
+    <button onclick="doGameSolve()">click me</button> <button onclick="cancelLatestRun()">click to cancel</button>
+    <div id="result"></div>
     <script>
         addInputElement()
     </script>
