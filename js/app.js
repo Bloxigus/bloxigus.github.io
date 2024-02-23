@@ -16,19 +16,36 @@ if (window.innerHeight > window.innerWidth) {
     div.style.height = `${window.innerHeight - 1}px`
 }
 let isFileSelected = false;
-let colourPickers = [...document.getElementsByTagName("input")].filter((_, i) => { return i != 0 });
+let colourPickers = [...document.getElementsByTagName("input")].filter((_, i) => { return i != 0 && _.type == "color" });
 let button = document.getElementsByTagName("button")[0];
 let copyRender = document.getElementsByTagName("button")[1];
 let random = document.getElementsByTagName("button")[2];
-let loadId = document.getElementsByTagName("button")[3];
-let fileChooser = document.getElementsByTagName("input")[9];
-let loadFile = document.getElementsByTagName("button")[4];
+// let loadId = document.getElementsByTagName("button")[3];
+let fileChooser = document.getElementById("fileChooser");
+let accessorySelector = document.getElementById("accessorySelect");
+/**
+ * @type {HTMLInputElement}
+ */
+let customSkinKeepOption = document.getElementById("cuskin")
+
+let tomiHatOptions = document.getElementById("tomiOptions");
+
+let loadFile = document.getElementsByTagName("button")[3];
 let lastFileUrl = ""
 fileChooser.addEventListener("change", () => {
     loadSkinFile()
 })
 loadFile.addEventListener("click", () => {
     fileChooser.click()
+})
+accessorySelector.addEventListener("change",() => {
+    // console.log(accessorySelector[accessorySelector.selectedIndex].id)
+    if (accessorySelector[accessorySelector.selectedIndex].id == "tomihat") {
+        tomiHatOptions.style.display = "block"
+    } else {
+        tomiHatOptions.style.display = "none"
+    }
+    updateColours()
 })
 copyRender.addEventListener("click", () => {
     renderer.domElement.toBlob((blob)=>{
@@ -41,7 +58,7 @@ slimCheck.addEventListener("change", () => {
     else setupCanvasDrawing(true)
 })
 button.addEventListener("click", () => {
-    var link = document.createElement('a');
+    let link = document.createElement('a');
     link.download = `AXOLOTL-${createId()}.png`;
     link.href = canvas.toDataURL()
     link.click();
@@ -57,11 +74,11 @@ random.addEventListener("click", () => {
     colourPickers[6].value = generateRandomRGB()
     updateColours()
 });
-loadId.addEventListener("click", () => {
-    loadIDString(colourPickers[7].value)
-});
+// loadId.addEventListener("click", () => {
+//     loadIDString(colourPickers[7].value)
+// });
 [...colourPickers].forEach((v, i) => {
-    if (i < 7) {
+    if (true) {
         v.addEventListener("input", ()=>{updateColours(false)}, false);
         v.addEventListener("change", ()=>{updateColours(false)}, false);
     }
@@ -69,13 +86,13 @@ loadId.addEventListener("click", () => {
 function loadIDString(id) {
     if (id.length == 36) {
         isFileSelected = false
-        var isSlim = /[S]/.test(colourPickers[7].value.split("")[35]);
+        let isSlim = /[S]/.test(id.split("")[35]);
         [...id.matchAll(/.{5}/g)].map((a, i) => {
-            var decimal = parseInt(a[0], 36)
-            var rgbDecimal = [decimal >> 16 & 255, decimal >> 8 & 255, decimal & 255]
-            var r = rgbDecimal[0].toString(16)
-            var g = rgbDecimal[1].toString(16)
-            var b = rgbDecimal[2].toString(16)
+            let decimal = parseInt(a[0], 36)
+            let rgbDecimal = [decimal >> 16 & 255, decimal >> 8 & 255, decimal & 255]
+            let r = rgbDecimal[0].toString(16)
+            let g = rgbDecimal[1].toString(16)
+            let b = rgbDecimal[2].toString(16)
             r = (r.length < 2) ? "0" + r : r
             g = (g.length < 2) ? "0" + g : g
             b = (b.length < 2) ? "0" + b : b
@@ -83,16 +100,16 @@ function loadIDString(id) {
         })
         setSlim(isSlim)
         updateColours()
-        colourPickers[7].value = createId()
+        id = createId()
     } else if (id.length == 35) {
         isFileSelected = false
-        var isSlim = false;
+        let isSlim = false;
         [...id.matchAll(/.{5}/g)].map((a, i) => {
-            var decimal = parseInt(a[0], 36)
-            var rgbDecimal = [decimal >> 16 & 255, decimal >> 8 & 255, decimal & 255]
-            var r = rgbDecimal[0].toString(16)
-            var g = rgbDecimal[1].toString(16)
-            var b = rgbDecimal[2].toString(16)
+            let decimal = parseInt(a[0], 36)
+            let rgbDecimal = [decimal >> 16 & 255, decimal >> 8 & 255, decimal & 255]
+            let r = rgbDecimal[0].toString(16)
+            let g = rgbDecimal[1].toString(16)
+            let b = rgbDecimal[2].toString(16)
             r = (r.length < 2) ? "0" + r : r
             g = (g.length < 2) ? "0" + g : g
             b = (b.length < 2) ? "0" + b : b
@@ -100,11 +117,30 @@ function loadIDString(id) {
         })
         setSlim(isSlim)
         updateColours()
-        colourPickers[7].value = createId()
+        id = createId()
+    }
+}
+function getAccessoryOptions() {
+    let palette = {}
+    if (accessorySelector[accessorySelector.selectedIndex].id == "tomihat") {
+        palette = {
+            "1": Utils.rgbToArray(colourPickers[7].value),
+            "2": Utils.rgbToArray(colourPickers[8].value),
+            "3": Utils.rgbToArray(colourPickers[9].value),
+            "4": Utils.rgbToArray(colourPickers[10].value),
+            "W": [255,255,255,255],
+            "B": [0, 0, 0, 255],
+            " ": [0, 0, 0, 0]
+        }
+    }
+    return {
+        colourLocations: accessoryMap[accessorySelector[accessorySelector.selectedIndex].id],
+        colourPalette: palette
     }
 }
 function updateColours(slimChange=false) {
     isFileSelected = false
+    // console.log(accessoryMap[accessorySelector[accessorySelector.selectedIndex].id])
     AxolotlGenerator.makeAxolotlRGB(
         colourPickers[0].value,
         colourPickers[1].value,
@@ -113,9 +149,10 @@ function updateColours(slimChange=false) {
         colourPickers[4].value,
         colourPickers[5].value,
         colourPickers[6].value,
-        slim
+        slim,
+        getAccessoryOptions()
     )
-    colourPickers[7].value = createId()
+    id = createId()
     setupCanvasDrawing(slimChange)
 }
 function runWhenDone() {
@@ -123,21 +160,21 @@ if (document.location.hash.length != 0 || document.location.search.length != 0) 
     loadIDString(((document.location.hash.length!=0)?document.location.hash:document.location.search).replace(/[#?]{1}/,""))
 }
 }
-colourPickers[7].value = createId()
+let id = createId()
 function createId() {
-    var a0 = [...parseInt(colourPickers[0].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
-    var a1 = [...parseInt(colourPickers[1].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
-    var a2 = [...parseInt(colourPickers[2].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
-    var a3 = [...parseInt(colourPickers[3].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
-    var a4 = [...parseInt(colourPickers[4].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
-    var a5 = [...parseInt(colourPickers[5].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
-    var a6 = [...parseInt(colourPickers[6].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
+    let a0 = [...parseInt(colourPickers[0].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
+    let a1 = [...parseInt(colourPickers[1].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
+    let a2 = [...parseInt(colourPickers[2].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
+    let a3 = [...parseInt(colourPickers[3].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
+    let a4 = [...parseInt(colourPickers[4].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
+    let a5 = [...parseInt(colourPickers[5].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
+    let a6 = [...parseInt(colourPickers[6].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
     return a0 + a1 + a2 + a3 + a4 + a5 + a6 + (slim ? "S" : "R")
 }
 function generateRandomRGB() {
-    var r = Math.floor(Math.random() * 256).toString(16)
-    var g = Math.floor(Math.random() * 256).toString(16)
-    var b = Math.floor(Math.random() * 256).toString(16)
+    let r = Math.floor(Math.random() * 256).toString(16)
+    let g = Math.floor(Math.random() * 256).toString(16)
+    let b = Math.floor(Math.random() * 256).toString(16)
     r = (r.length < 2) ? "0" + r : r
     g = (g.length < 2) ? "0" + g : g
     b = (b.length < 2) ? "0" + b : b
@@ -152,10 +189,12 @@ AxolotlGenerator.makeAxolotlRGB(
     "#3A006C",
     "#D2C2E0",
     "#D25989",
-    "#9E1020"
+    "#9E1020",
+    false,
+    getAccessoryOptions()
 )
 function loadSkinFile() {
-    var reader = new FileReader();
+    let reader = new FileReader();
     reader.onload = () => {
         isFileSelected = true
         colourPickers[7].value = ""
@@ -163,7 +202,9 @@ function loadSkinFile() {
         customImg.onload = () => {
             AxolotlGenerator.canvasContext.clearRect(0, 0, 64, 64)
             AxolotlGenerator.canvasContext.drawImage(customImg, 0, 0)
-            AxolotlGenerator.arrayBuffer.set(AxolotlGenerator.canvasContext.getImageData(0,0,64,64).data)
+            let arrayBuffer = AxolotlGenerator.canvasContext.getImageData(0,0,64,64).data
+            AxolotlGenerator.arrayBuffer.set(arrayBuffer)
+            AxolotlGenerator.setSkinArrayBuffer.set(arrayBuffer)
             setupCanvasDrawing()
         }
         customImg.src = reader.result

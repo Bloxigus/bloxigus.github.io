@@ -1,4 +1,4 @@
-/*var colours = {
+/*let colours = {
     "A": "edge",
     "B": "edge2",
     "C": "middle",
@@ -12,7 +12,7 @@
     " ": "transparent",
     "X": "base"
 }*/
-var colourLocations = {
+let colourLocations = {
     head: {
         top: [
             "AABBBBAA",
@@ -24,7 +24,7 @@ var colourLocations = {
             "ABCCCCBA",
             "AABBBBAA"
         ],
-        side: [
+        side_right: [
             "AABBIJAA",
             "ABCGHCBA",
             "BCFFCIJB",
@@ -34,6 +34,16 @@ var colourLocations = {
             "ABCCFFBA",
             "AABBBBAA"
         ],
+        side_left: Utils.reverse([
+            "AABBIJAA",
+            "ABCGHCBA",
+            "BCFFCIJB",
+            "BCCCGHCB",
+            "BCCFFCII",
+            "ECCCCGHB",
+            "ABCCFFBA",
+            "AABBBBAA"
+        ]),
         front: [
             "AABBBBAA",
             "ABCCCCBA",
@@ -76,7 +86,17 @@ var colourLocations = {
             "        ",
             "        "
         ],
-        side: [
+        side_left: Utils.reverse([
+            "    IJ  ",
+            "   GH   ",
+            "  FF IJ ",
+            "    GH  ",
+            "   FF II",
+            "     GH ",
+            "    FF  ",
+            "        "
+        ]),
+        side_right: [
             "    IJ  ",
             "   GH   ",
             "  FF IJ ",
@@ -124,7 +144,21 @@ var colourLocations = {
             "XXXX",
             "XXXX"
         ],
-        side: [
+        side_left: [
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX"
+        ],
+        side_right: [
             "XXXX",
             "XXXX",
             "XXXX",
@@ -180,7 +214,21 @@ var colourLocations = {
             "XXXX",
             "XXXX"
         ],
-        side: [
+        side_left: [
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX"
+        ],
+        side_right: [
             "XXXX",
             "XXXX",
             "XXXX",
@@ -232,11 +280,25 @@ var colourLocations = {
     chest: {
         top: [
             "XXXXXXXX",
-            "XXXXXXXX",
-            "XXXXXXXX",
-            "XXXXXXXX"
+            "XXCCCCXX",
+            "XXCCCCXX",
+            "XXXCCXXX"
         ],
-        side: [
+        side_left: [
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX"
+        ],
+        side_right: [
             "XXXX",
             "XXXX",
             "XXXX",
@@ -292,7 +354,21 @@ var colourLocations = {
             "XXXX",
             "XXXX"
         ],
-        side: [
+        side_right: [
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "BBBB",
+            "AAAA"
+        ],
+        side_left: [
             "XXXX",
             "XXXX",
             "XXXX",
@@ -348,7 +424,21 @@ var colourLocations = {
             "XXXX",
             "XXXX"
         ],
-        side: [
+        side_right: [
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX"
+        ],
+        side_left: [
             "XXXX",
             "XXXX",
             "XXXX",
@@ -398,7 +488,7 @@ var colourLocations = {
         ]
     }
 }
-var colourLocationsSlim = {
+let colourLocationsSlim = {
     head: colourLocations.head,
     hat: colourLocations.hat,
     legs: colourLocations.legs,
@@ -411,7 +501,21 @@ var colourLocationsSlim = {
             "XXX",
             "XXX"
         ],
-        side: [
+        side_left: [
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "BBBB",
+            "AAAA"
+        ],
+        side_right: [
             "XXXX",
             "XXXX",
             "XXXX",
@@ -467,7 +571,21 @@ var colourLocationsSlim = {
             "XXX",
             "XXX"
         ],
-        side: [
+        side_right: [
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX",
+            "XXXX"
+        ],
+        side_left: [
             "XXXX",
             "XXXX",
             "XXXX",
@@ -517,15 +635,16 @@ var colourLocationsSlim = {
         ]
     }
 }
-var locations = {
+let locations = {
     head: [[0, 0]],
     hat: [[32, 0]],
     legs: [[0, 16], [16, 48]],
+    // outerLayerLeg: [[0,48],[16, 64]],
     chest: [[16, 16]],
     arm: [[40, 16], [32, 48]],
     outerLayerArm: [[40, 32], [48, 48]]
 }
-var locationsSlim = locations
+let locationsSlim = locations
 let cubes = {
     head: {
         size: [8, 8, 8],

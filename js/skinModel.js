@@ -1,4 +1,4 @@
-/// <reference types="three" />
+
 let camera, scene, renderer, mesh, material;
 let size = 0.125
 let updates = []
@@ -79,7 +79,7 @@ function init() {
     for (let cube in outerLayerCubes) {
         let cube3 = outerLayerCubes[cube]
         if (cube3.hidden) continue
-        var opts = { transparent: true, opacity: 1, alphaTest: Number.EPSILON, side: 2, depthWrite: true, depthTest: true }
+        let opts = { transparent: true, opacity: 1, alphaTest: Number.EPSILON, side: 2, depthWrite: true, depthTest: true }
         let materials = [new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts)];
         updates.push((_changeSlim = false) => {
             if (!cube.includes("Arm") && _changeSlim) return;
@@ -133,6 +133,7 @@ function init() {
 function setSlim(_setSlim = false) {
     slim = _setSlim;
     arms.forEach(arm => {
+        arm[1].geometry.dispose()
         if (!arm[2]) arm[1].geometry = new THREE.BoxGeometry((slim ? 30 : 40), 120, 40)
         else arm[1].geometry = new THREE.BoxGeometry((slim ? 35 : 45), 125, 45)
         if (slim) {

@@ -3,7 +3,7 @@
         const blob = new Blob([`(${fn.toString()})()`], { type: "text/javascript" });
         return URL.createObjectURL(blob);
     }
-    var sw = _ => {
+    let sw = _ => {
         let jobQueue = {}
         onmessage = (event) => {
             let target = event.data.target
@@ -195,7 +195,7 @@
                 return [false, newCombinations, closest]
             }
             function recursiveSoln(depth, next, hasSolution, result, smallestDigits) {
-                var shouldReturn = false;
+                let shouldReturn = false;
                 if (next) {
                     this.next = next;
                     this.hasSolution = hasSolution;
@@ -207,7 +207,7 @@
                 // cull off any unneeded depth
                 if (this.smallestDigits <= depth + 1) return [this.hasSolution, this.result, this.smallestDigits];
                 // the last version of next before we change it
-                var lastNext = this.next
+                let lastNext = this.next
                 if (depth >= values.length) return [this.hasSolution, this.result, this.smallestDigits]
                 for (let B in lastNext[1]) {
                     let start = lastNext[1][B]
@@ -227,12 +227,12 @@
                 }
             }
             function progressbar(length, max, fillChar = "=", emptyChar = " ") {
-                var percent = length / max
-                var progress = 0
-                var hassoln = false;
-                var closest = 0;
-                var leastSize = 100
-                var returnVal = {
+                let percent = length / max
+                let progress = 0
+                let hassoln = false;
+                let closest = 0;
+                let leastSize = 100
+                let returnVal = {
                     update: () => {
                         progress++;
                         postMessage({
@@ -331,7 +331,7 @@
                     }
                 }
                 // recursive solution that *works*
-                var progress = progressbar(60, combinations.length)
+                let progress = progressbar(60, combinations.length)
                 for (let A in combinations) {
                     if (jobQueue[jobId] == "stop") continue;
                     progress.update()
@@ -345,7 +345,7 @@
                         continue;
                     }
                     // Starts a recurse with the current state
-                    var recurseResults = recursiveSoln(3, next, hasSolution, result, smallestDigits)
+                    let recurseResults = recursiveSoln(3, next, hasSolution, result, smallestDigits)
                     //console.log(recurseResults)
                     if (recurseResults[3]) progress.updateClosest(recurseResults[3])
                     if (recurseResults[0]) {
@@ -426,7 +426,7 @@ const BRACKET_COLOUR = ""
 const NUMBER_COLOUR = ""
 const OPERATION_COLOUR = ""
 function beautifyEquation(equation="") {
-    var removeFirstBracket = (`[${equation}]`.includes("[ (") && `[${equation}]`.includes(") ]"))
+    let removeFirstBracket = (`[${equation}]`.includes("[ (") && `[${equation}]`.includes(") ]"))
     console.log(removeFirstBracket)
     if (removeFirstBracket) {
         equation = equation.replace("[(","[")

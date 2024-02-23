@@ -1,8 +1,14 @@
 body {
     background-color: gray;
     margin: 0px;
+    user-select: none;
 }
-
+div#tomiOptions {
+    display: none;
+}
+div p {
+    margin: 3px;
+}
 div * {
     font-size: 30px;
     font-family: 'Courier New', Courier, monospace;
@@ -25,6 +31,7 @@ div.center {
 }
 canvas#can {
     display:none;
+    /* width: 1000px; */
     float:left;
     height: 100%;
     image-rendering: pixelated;
