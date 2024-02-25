@@ -1,4 +1,4 @@
-
+/// <reference types="three" />
 let camera, scene, renderer, mesh, material;
 let size = 0.125
 let updates = []
@@ -8,7 +8,6 @@ let yIncrease = -40
 let sizeMult = 10
 let directionalLight, ambientLight
 let filter = THREE.NearestFilter;
-let meshType = "MeshLambertMaterial"
 init();
 setupCanvasDrawing();
 animate();
@@ -48,7 +47,6 @@ function init() {
         if (cube3.hidden) continue
         let materials = [new THREE.MeshLambertMaterial(), new THREE.MeshLambertMaterial(), new THREE.MeshLambertMaterial(), new THREE.MeshLambertMaterial(), new THREE.MeshLambertMaterial(), new THREE.MeshLambertMaterial()];
         updates.push((_changeSlim = false) => {
-            if (!cube.includes("Arm") && _changeSlim) return;
             let cube2 = (slim ? cubesSlim : cubes)[cube]
             if (!!materials[0].map) {
                 materials[0].map.dispose()
@@ -82,7 +80,6 @@ function init() {
         let opts = { transparent: true, opacity: 1, alphaTest: Number.EPSILON, side: 2, depthWrite: true, depthTest: true }
         let materials = [new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts), new THREE.MeshLambertMaterial(opts)];
         updates.push((_changeSlim = false) => {
-            if (!cube.includes("Arm") && _changeSlim) return;
             let cube2 = (slim ? outerLayerCubesSlim : outerLayerCubes)[cube]
             if (!!materials[0].map) {
                 materials[0].map.dispose()

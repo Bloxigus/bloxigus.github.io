@@ -16,7 +16,7 @@ if (window.innerHeight > window.innerWidth) {
     div.style.height = `${window.innerHeight - 1}px`
 }
 let isFileSelected = false;
-let colourPickers = [...document.getElementsByTagName("input")].filter((_, i) => { return i != 0 && _.type == "color" });
+let colourPickers = [...document.getElementsByTagName("input")].filter((element, index) => { return index != 0 && element.type == "color" });
 let button = document.getElementsByTagName("button")[0];
 let copyRender = document.getElementsByTagName("button")[1];
 let random = document.getElementsByTagName("button")[2];
@@ -27,7 +27,7 @@ let accessorySelector = document.getElementById("accessorySelect");
  * @type {HTMLInputElement}
  */
 let customSkinKeepOption = document.getElementById("cuskin")
-
+customSkinKeepOption.disabled = true;
 let tomiHatOptions = document.getElementById("tomiOptions");
 
 let loadFile = document.getElementsByTagName("button")[3];
@@ -37,6 +37,9 @@ fileChooser.addEventListener("change", () => {
 })
 loadFile.addEventListener("click", () => {
     fileChooser.click()
+})
+customSkinKeepOption.addEventListener("change",() => {
+    updateColours()
 })
 accessorySelector.addEventListener("change",() => {
     // console.log(accessorySelector[accessorySelector.selectedIndex].id)
@@ -54,8 +57,7 @@ copyRender.addEventListener("click", () => {
 })
 slimCheck.addEventListener("change", () => {
     setSlim(slimCheck.checked)
-    if (!isFileSelected) updateColours(true)
-    else setupCanvasDrawing(true)
+    updateColours(true)
 })
 button.addEventListener("click", () => {
     let link = document.createElement('a');
@@ -199,6 +201,7 @@ function loadSkinFile() {
         isFileSelected = true
         colourPickers[7].value = ""
         lastFileUrl = reader.result
+        customSkinKeepOption.disabled = false;
         customImg.onload = () => {
             AxolotlGenerator.canvasContext.clearRect(0, 0, 64, 64)
             AxolotlGenerator.canvasContext.drawImage(customImg, 0, 0)
