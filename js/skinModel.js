@@ -164,4 +164,8 @@ function animate() {
     ambientLight.position.set(camera.position.x, camera.position.y, camera.position.z)
     renderer.render(scene, camera);
 }
-runWhenDone()
+
+/**
+ * If this section is reached, all functions are in scope
+ */
+onAppLoaded()

@@ -100,7 +100,7 @@ class AxolotlGenerator {
                             // console.log(accessoryOptions?.colourLocations?.[type]?.[locationType]?.[i2]?.[i3])
 
                             if (accessoryCodeLetter != undefined && accessoryCodeLetter != "X" && accessoryOptions.colourPalette[accessoryCodeLetter]) {
-                                data[pos[1] + l2[1] + i2][pos[0] + l2[0] + i3] = accessoryOptions.colourPalette[accessoryCodeLetter];
+                                data[pos[1] + l2[1] + i2][pos[0] + l2[0] + i3] = accessoryOptions.colourPalette[accessoryCodeLetter].map(a=>a+(Math.random() - 0.5));
                                 // console.log(accessoryOptions[accessoryCodeLetter])
                                 continue
                             }
