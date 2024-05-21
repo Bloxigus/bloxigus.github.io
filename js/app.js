@@ -101,7 +101,7 @@ function loadIDString(id) {
             colourPickers[i].value = `#${r + g + b}`
         })
         setSlim(isSlim)
-        updateColours()
+        updateColours(true)
         id = createId()
     } else if (id.length == 35) {
         isFileSelected = false
@@ -118,7 +118,7 @@ function loadIDString(id) {
             colourPickers[i].value = `#${r + g + b}`
         })
         setSlim(isSlim)
-        updateColours()
+        updateColours(true)
         id = createId()
     }
 }

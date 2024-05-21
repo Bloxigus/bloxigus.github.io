@@ -469,7 +469,7 @@ function doGameSolve() {
     solveNumberGame(target,values).then(a=>{
         if (a.equation) {
         //console.log(a)
-        document.getElementById("result").innerHTML = beautifyEquation(a.equation) + " = " + a.target
+            document.getElementById("result").innerHTML = beautifyEquation(a.equation) + " = " + a.target
         } else {
             document.getElementById("result").innerHTML = "no solutions"
         }
