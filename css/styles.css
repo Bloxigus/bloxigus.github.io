@@ -29,7 +29,7 @@ input#slim {
 div.center {
     text-align: center;
 }
-canvas#can {
+canvas[data-canvas] {
     display:none;
     /* width: 1000px; */
     float:left;
@@ -37,6 +37,7 @@ canvas#can {
     image-rendering: pixelated;
 }
 img {
+    image-rendering: pixelated;
     display: none;
 }
 br {
