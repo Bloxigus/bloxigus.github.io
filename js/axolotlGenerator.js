@@ -12,7 +12,7 @@ function clamp(x, min, max) {
     if (x < min) return min;
     return x;
 }
-const AxolotlSkinGenerator = new Axolotl()
+
 class Axolotl {
     /** @type {CanvasRenderingContext2D} */
     canvasContext;
@@ -67,7 +67,7 @@ class Axolotl {
             " ": [0, 0, 0, 0],
             "X": [-1, -1, -1, -1]
         }
-        let png = {
+        let png = { 
             width: 64,
             height: 64
         }
@@ -170,3 +170,4 @@ class Axolotl {
         this.makeAxolotl(edge, middle, mouth, eye, finStart, finEnd, tie, false, OPTIONS, SLIM_SKIN)
     }
 }
+const AxolotlSkinGenerator = new Axolotl()

@@ -31,9 +31,9 @@ function toradians(degrees) {
 }
 
 function getDataFromSubset(x = 0, y = 0, sizex = 0, sizey = 0, reverse = false, isCape = false, mirror = false) {
-    let from = AxolotlGenerator.arrayBuffer;
+    let from = AxolotlSkinGenerator.arrayBuffer;
     if (isCape) {
-        from = AxolotlGenerator.capeBuffer
+        from = AxolotlSkinGenerator.capeBuffer
     }
     const data = new Uint8Array(4 * sizex * sizey);
     if (!mirror) {
