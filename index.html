@@ -3,86 +3,107 @@
 <link rel="stylesheet" href="./css/styles.css">
 <style></style>
 <div class="container0">
-    <canvas id="can" width="64" height="64" class="box0"></canvas>
+    <canvas id="can" width="64" height="64" data-canvas="skin"></canvas>
     <div style="float: right;width:50%" class="box1">
         <div style="float: left;">
             <div class="center">
                 <p>Select Axolotl Colours</p>
             </div>
             <div>
-                <input type="checkbox" value="false" id="slim" name="slim">
+                <input data-check="slim" type="checkbox" value="false" id="slim" name="slim">
                 <label for="slim">Slim Skin</label>
             </div>
             <div>
-                <input type="color" id="edge" name="edge" value="#B0D5FC">
+                <input data-colour="corner" type="color" id="edge" name="edge" value="#B0D5FC">
                 <label for="edge">Head Corners</label>
             </div>
             <div>
-                <input type="color" id="middle" name="middle" value="#E2EEFF">
+                <input data-colour="middle" type="color" id="middle" name="middle" value="#E2EEFF">
                 <label for="middle">Head Middle</label>
             </div>
             <div>
-                <input type="color" id="mouth" name="mouth" value="#E2AAC0">
+                <input data-colour="mouth" type="color" id="mouth" name="mouth" value="#E2AAC0">
                 <label for="mouth">Mouth</label>
             </div>
             <div>
-                <input type="color" id="eyes" name="eyes" value="#3A006C">
+                <input data-colour="eyes" type="color" id="eyes" name="eyes" value="#3A006C">
                 <label for="eyes">Eyes</label>
             </div>
             <div>
-                <input type="color" id="finEnd" name="finEnd" value="#D2C2E0">
+                <input data-colour="start" type="color" id="finEnd" name="finEnd" value="#D2C2E0">
                 <label for="finEnd">Ragi Start</label>
             </div>
             <div>
-                <input type="color" id="finStart" name="finStart" value="#D25989">
+                <input data-colour="end" type="color" id="finStart" name="finStart" value="#D25989">
                 <label for="finStart">Ragi End</label>
             </div>
             <div>
-                <input type="color" id="tie" name="tie" value="#9e1020">
+                <input data-colour="tie" type="color" id="tie" name="tie" value="#9e1020">
                 <label for="tie">Tie Colour</label>
             </div>
             <div>
                 <select class="idBox" name="accessorySelect" id="accessorySelect">
                     <option id="none">None</option>
-                    <option id="tomihat">Tomi Hat</option>
+                    <option id="tomihat">Prop Hat</option>
                     <!-- <option id="pumpkin">Pumpkin Head</option>
                     <option id="christmas">Christmas Hat</option> -->
                 </select>
                 <label for="accessorySelect">Accessory</label>
             </div>
+            
             <div id="tomiOptions">
                 <p>Quarter Colours</p>
                 <div>
-                    <input type="color" id="firstCol" name="firstCol" value="#e64c5e">
+                    <input data-tomi="first" type="color" id="firstCol" name="firstCol" value="#e64c5e">
                     <label for="firstCol">First</label>
                 </div>
                 <div>
-                    <input type="color" id="secondCol" name="secondCol" value="#5fa2bf">
+                    <input data-tomi="second" type="color" id="secondCol" name="secondCol" value="#5fa2bf">
                     <label for="secondCol">Second</label>
                 </div>
                 <div>
-                    <input type="color" id="thirdCol" name="thirdCol" value="#c2b742">
+                    <input data-tomi="third" type="color" id="thirdCol" name="thirdCol" value="#c2b742">
                     <label for="thirdCol">Third</label>
                 </div>
                 <div>
-                    <input type="color" id="fourthCol" name="fourthCol" value="#00ad2b">
+                    <input data-tomi="fourth" type="color" id="fourthCol" name="fourthCol" value="#00ad2b">
                     <label for="fourthCol">Fourth</label>
                 </div>
             </div>
             <br>
+            <div>
+                <select class="idBox" name="capeSelect" id="capeSelect">
+                    <option id="none">None</option>
+                    <option id="anniversary" selected>15th Anniversary</option>
+                    <option id="cherry_blossom">Cherry Blossom</option>
+                    <option id="migrator">Migrator</option>
+                    <option id="vanilla">Vanilla</option>
+                    <option id="twitch">Twitch</option>
+                    <option id="minecon2016" hidden>MineCon 2016</option>
+                    <option id="minecon2015" hidden>MineCon 2015</option>
+                    <option id="minecon2013" hidden>MineCon 2013</option>
+                    <option id="minecon2012" hidden>MineCon 2012</option>
+                    <option id="minecon2011" hidden>MineCon 2011</option>
+                    <option id="valentine" hidden>Valentine's Day</option>
+                    <option id="mojang" hidden>Mojang</option>
+                    <option id="mojangclassic" hidden>Mojang Classic</option>
+                </select>
+                <label for="capeSelect">Cape</label>
+            </div>
+            <br>
             <div class="center">
                 <div>
-                    <button>
+                    <button data-button="download">
                         Download The Skin!
                     </button>
                 </div>
                 <div>
-                    <button>
+                    <button data-button="copy">
                         Copy Render to Clipboard
                     </button>
                 </div>
                 <div>
-                    <button>
+                    <button data-button="random">
                         &#127922;Randomise!
                     </button>
                 </div>
@@ -101,9 +122,11 @@
         </div>
     </div>
 </div>
-<img src="./images/regularSkinBase.png">
-<img src="./images/slimSkinBase.png">
-<img>
+<img data-skin="regular" src="./images/regularSkinBase.png">
+<img data-skin="slim" src="./images/slimSkinBase.png">
+<img data-skin="custom">
+<img data-skin="cape">
+<canvas data-canvas="cape" width="64" height="64" id="box2"></canvas>
 <script src="./js/lib/three.js"></script>
 <script src="./js/lib/orbit.js"></script>
 
@@ -111,14 +134,10 @@
 
 <script src="./js/headDecorations.js"></script>
 
-<!--758 lines of code-->
-<script src="./js/reallyBigObjects.js"></script>
+<script src="./js/skinConstants.js"></script>
 
-<!--119 lines of code-->
 <script src="./js/axolotlGenerator.js"></script>
 
-<!--174 lines of code-->
 <script src="./js/app.js"></script>
 
-<!--180 lines of code-->
 <script src="./js/skinModel.js"></script>

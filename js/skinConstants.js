@@ -1,17 +1,17 @@
-/*let colours = {
-    "A": "edge",
-    "B": "edge2",
-    "C": "middle",
-    "D": "lip",
-    "E": "eye",
-    "F": "fin1",
-    "G": "fin2",
-    "H": "fin3",
-    "I": "fin4",
-    "J": "fin5",
-    " ": "transparent",
+/** What each colour represents:
+    "A": "edge"
+    "B": "edge2"
+    "C": "middle"
+    "D": "lip"
+    "E": "eye"
+    "F": "fin1"
+    "G": "fin2"
+    "H": "fin3"
+    "I": "fin4"
+    "J": "fin5"
+    " ": "transparent"
     "X": "base"
-}*/
+*/
 let colourLocations = {
     head: {
         top: [
@@ -636,13 +636,31 @@ let colourLocationsSlim = {
     }
 }
 let locations = {
-    head: [[0, 0]],
-    hat: [[32, 0]],
-    legs: [[0, 16], [16, 48]],
-    // outerLayerLeg: [[0,48],[16, 64]],
-    chest: [[16, 16]],
-    arm: [[40, 16], [32, 48]],
-    outerLayerArm: [[40, 32], [48, 48]]
+    head: [
+        [0, 0]
+    ],
+    hat: [
+        [32, 0]
+    ],
+    legs: [
+        [0, 16],
+        [16, 48]
+    ],
+    outerLayerLeg: [
+        [0, 48],
+        [16, 64]
+    ],
+    chest: [
+        [16, 16]
+    ],
+    arm: [
+        [40, 16],
+        [32, 48]
+    ],
+    outerLayerArm: [
+        [40, 32],
+        [48, 48]
+    ]
 }
 let locationsSlim = locations
 let cubes = {
@@ -652,12 +670,12 @@ let cubes = {
         hidden: false,
         inflate: 0,
         uv: {
-            front: [8,8],
-            bottom: [16,0],
-            top: [8,0],
-            left: [0,8],
-            right: [16,8],
-            back: [24,8]
+            front: [8, 8],
+            bottom: [16, 0],
+            top: [8, 0],
+            left: [0, 8],
+            right: [16, 8],
+            back: [24, 8]
         }
     },
     body: {
@@ -666,12 +684,12 @@ let cubes = {
         hidden: false,
         inflate: 0,
         uv: {
-            front: [20,20],
-            bottom: [28,16],
-            top: [20,16],
-            left: [16,20],
-            right: [28,20],
-            back: [32,20]
+            front: [20, 20],
+            bottom: [28, 16],
+            top: [20, 16],
+            left: [16, 20],
+            right: [28, 20],
+            back: [32, 20]
         }
     },
     rightArm: {
@@ -680,12 +698,12 @@ let cubes = {
         hidden: false,
         inflate: 0,
         uv: {
-            front: [36,52],
-            bottom: [40,48],
-            top: [36,48],
-            left: [32,52],
-            right: [40,52],
-            back: [36,52]
+            front: [36, 52],
+            bottom: [40, 48],
+            top: [36, 48],
+            left: [32, 52],
+            right: [40, 52],
+            back: [36, 52]
         }
     },
     leftArm: {
@@ -694,12 +712,12 @@ let cubes = {
         hidden: false,
         inflate: 0,
         uv: {
-            front: [44,20],
-            bottom: [48,16],
-            top: [44,16],
-            left: [40,20],
-            right: [48,20],
-            back: [52,20]
+            front: [44, 20],
+            bottom: [48, 16],
+            top: [44, 16],
+            left: [40, 20],
+            right: [48, 20],
+            back: [52, 20]
         }
     },
     rightLeg: {
@@ -708,12 +726,12 @@ let cubes = {
         hidden: false,
         inflate: 0,
         uv: {
-            front: [20,52],
-            bottom: [24,48],
-            top: [20,48],
-            left: [16,52],
-            right: [24,52],
-            back: [28,52]
+            front: [20, 52],
+            bottom: [24, 48],
+            top: [20, 48],
+            left: [16, 52],
+            right: [24, 52],
+            back: [28, 52]
         }
     },
     leftLeg: {
@@ -722,12 +740,12 @@ let cubes = {
         hidden: false,
         inflate: 0,
         uv: {
-            front: [4,20],
-            bottom: [8,16],
-            top: [4,16],
-            left: [0,20],
-            right: [8,20],
-            back: [12,20]
+            front: [4, 20],
+            bottom: [8, 16],
+            top: [4, 16],
+            left: [0, 20],
+            right: [8, 20],
+            back: [12, 20]
         }
     }
 }
@@ -738,12 +756,12 @@ let outerLayerCubes = {
         hidden: false,
         inflate: 1,
         uv: {
-            front: [40,8],
-            bottom: [48,0],
-            top: [40,0],
-            left: [32,8],
-            right: [48,8],
-            back: [56,8]
+            front: [40, 8],
+            bottom: [48, 0],
+            top: [40, 0],
+            left: [32, 8],
+            right: [48, 8],
+            back: [56, 8]
         }
     },
     body: {
@@ -752,12 +770,12 @@ let outerLayerCubes = {
         hidden: false,
         inflate: 0.5,
         uv: {
-            front: [20,36],
-            bottom: [28,32],
-            top: [20,32],
-            left: [16,36],
-            right: [28,36],
-            back: [32,36]
+            front: [20, 36],
+            bottom: [28, 32],
+            top: [20, 32],
+            left: [16, 36],
+            right: [28, 36],
+            back: [32, 36]
         }
     },
     rightArm: {
@@ -766,12 +784,12 @@ let outerLayerCubes = {
         hidden: false,
         inflate: 0.5,
         uv: {
-            front: [52,52],
-            bottom: [56,48],
-            top: [52,48],
-            left: [48,52],
-            right: [56,52],
-            back: [60,52]
+            front: [52, 52],
+            bottom: [56, 48],
+            top: [52, 48],
+            left: [48, 52],
+            right: [56, 52],
+            back: [60, 52]
         }
     },
     leftArm: {
@@ -780,12 +798,12 @@ let outerLayerCubes = {
         hidden: false,
         inflate: 0.5,
         uv: {
-            front: [44,36],
-            bottom: [48,32],
-            top: [44,32],
-            left: [40,36],
-            right: [48,36],
-            back: [52,36]
+            front: [44, 36],
+            bottom: [48, 32],
+            top: [44, 32],
+            left: [40, 36],
+            right: [48, 36],
+            back: [52, 36]
         }
     },
     rightLeg: {
@@ -794,12 +812,12 @@ let outerLayerCubes = {
         hidden: false,
         inflate: 0.5,
         uv: {
-            front: [4,52],
-            bottom: [8,48],
-            top: [4,48],
-            left: [0,52],
-            right: [8,52],
-            back: [12,52]
+            front: [4, 52],
+            bottom: [8, 48],
+            top: [4, 48],
+            left: [0, 52],
+            right: [8, 52],
+            back: [12, 52]
         }
     },
     leftLeg: {
@@ -808,12 +826,12 @@ let outerLayerCubes = {
         hidden: false,
         inflate: 0.5,
         uv: {
-            front: [4,36],
-            bottom: [8,32],
-            top: [4,32],
-            left: [0,36],
-            right: [8,36],
-            back: [12,36]
+            front: [4, 36],
+            bottom: [8, 32],
+            top: [4, 32],
+            left: [0, 36],
+            right: [8, 36],
+            back: [12, 36]
         }
     }
 }
@@ -826,12 +844,12 @@ let cubesSlim = {
         hidden: false,
         inflate: 0,
         uv: {
-            front: [36,52],
-            bottom: [39,48],
-            top: [36,48],
-            left: [32,52],
-            right: [39,52],
-            back: [35,52]
+            front: [36, 52],
+            bottom: [39, 48],
+            top: [36, 48],
+            left: [32, 52],
+            right: [39, 52],
+            back: [35, 52]
         }
     },
     leftArm: {
@@ -840,12 +858,12 @@ let cubesSlim = {
         hidden: false,
         inflate: 0,
         uv: {
-            front: [44,20],
-            bottom: [47,16],
-            top: [44,16],
-            left: [40,20],
-            right: [47,20],
-            back: [51,20]
+            front: [44, 20],
+            bottom: [47, 16],
+            top: [44, 16],
+            left: [40, 20],
+            right: [47, 20],
+            back: [51, 20]
         }
     },
     rightLeg: cubes.rightLeg,
@@ -860,12 +878,12 @@ let outerLayerCubesSlim = {
         hidden: false,
         inflate: 0.5,
         uv: {
-            front: [52,52],
-            bottom: [55,48],
-            top: [52,48],
-            left: [48,52],
-            right: [55,52],
-            back: [59,52]
+            front: [52, 52],
+            bottom: [55, 48],
+            top: [52, 48],
+            left: [48, 52],
+            right: [55, 52],
+            back: [59, 52]
         }
     },
     leftArm: {
@@ -874,12 +892,12 @@ let outerLayerCubesSlim = {
         hidden: false,
         inflate: 0.5,
         uv: {
-            front: [44,36],
-            bottom: [47,32],
-            top: [44,32],
-            left: [40,36],
-            right: [47,36],
-            back: [51,36]
+            front: [44, 36],
+            bottom: [47, 32],
+            top: [44, 32],
+            left: [40, 36],
+            right: [47, 36],
+            back: [51, 36]
         }
     },
     rightLeg: outerLayerCubes.rightLeg,

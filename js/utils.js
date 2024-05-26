@@ -1,6 +1,6 @@
 class Utils {
     static rgbToArray(colour) {
-        colour = colour.replace(/#/g,"")
+        colour = colour.replace(/#/g, "")
         let asNumber = parseInt(colour, 16)
         return [asNumber >> 16 & 255, asNumber >> 8 & 255, asNumber >> 0 & 255, 255]
     }

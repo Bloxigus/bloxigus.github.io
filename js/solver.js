@@ -1,6 +1,8 @@
 (() => {
     function fn2workerURL(fn) {
-        const blob = new Blob([`(${fn.toString()})()`], { type: "text/javascript" });
+        const blob = new Blob([`(${fn.toString()})()`], {
+            type: "text/javascript"
+        });
         return URL.createObjectURL(blob);
     }
     let sw = _ => {
@@ -140,8 +142,8 @@
                             continue;
                         }
                         if (newCombinations.findIndex(v => {
-                            return v.flags == flag && v.value == res[0];
-                        }) != -1) {
+                                return v.flags == flag && v.value == res[0];
+                            }) != -1) {
                             dropped.DUPLICATE += 1;
                             continue;
                         }
@@ -170,8 +172,8 @@
                         if ((res[0] + "").includes(".")) continue
                         if (res[0] > target * target) continue
                         if (newCombinations.findIndex(v => {
-                            return v.flags == flag && v.value == res[0];
-                        }) != -1) {
+                                return v.flags == flag && v.value == res[0];
+                            }) != -1) {
                             dropped.DUPLICATE += 1;
                             continue;
                         }
@@ -194,6 +196,7 @@
                 //console.log(closest)
                 return [false, newCombinations, closest]
             }
+
             function recursiveSoln(depth, next, hasSolution, result, smallestDigits) {
                 let shouldReturn = false;
                 if (next) {
@@ -226,6 +229,7 @@
                     return [this.hasSolution, this.result, this.smallestDigits, this.closest]
                 }
             }
+
             function progressbar(length, max, fillChar = "=", emptyChar = " ") {
                 let percent = length / max
                 let progress = 0
@@ -287,20 +291,18 @@
             let closestx = []
             async function do_stuff(nu) {
                 let targ2 = target * target
-                let combinations = [
-                    {
-                        flags: 0b0000000,
-                        value: 0,
-                        equations: 0
-                    }
-                ];
+                let combinations = [{
+                    flags: 0b0000000,
+                    value: 0,
+                    equations: 0
+                }];
                 combinations.pop()
                 let hasSolution = false;
                 let smallestDigits = values.length + 1
                 for (let A in values) {
                     if (hasSolution) continue
                     if (values[A] == target) {
-                        result = [values[A], values[A]+"", 0]
+                        result = [values[A], values[A] + "", 0]
                         hasSolution = true
                         smallestDigits = 1
                         console.log([values[A], values[A], values[A]])
@@ -366,14 +368,47 @@
             }
             let totalForced = 0
             let searched = {}
-            Object.defineProperty(searched, "total", { get: () => { return totalForced - (dropped.DECIMAL + dropped.TOO_LARGE + dropped.DUPLICATE) } })
-            Object.defineProperty(searched, "totalWithDropped", { get: () => { return totalForced } })
-            Object.defineProperty(searched, "totalDropped", { get: () => { return dropped.DECIMAL + dropped.TOO_LARGE + dropped.DUPLICATE } })
-            Object.defineProperty(searched, "totalDroppedDecimal", { get: () => { return dropped.DECIMAL } })
-            Object.defineProperty(searched, "totalDroppedTooLarge", { get: () => { return dropped.TOO_LARGE } })
-            Object.defineProperty(searched, "totalDroppedDuplicate", { get: () => { return dropped.DUPLICATE } })
-            Object.defineProperty(searched, "totalDroppedCommutative", { get: () => { return dropped.COMMUTATIVE } })
-            let dropped = { DECIMAL: 0, TOO_LARGE: 0, DUPLICATE: 0, COMMUTATIVE: 0 }
+            Object.defineProperty(searched, "total", {
+                get: () => {
+                    return totalForced - (dropped.DECIMAL + dropped.TOO_LARGE + dropped.DUPLICATE)
+                }
+            })
+            Object.defineProperty(searched, "totalWithDropped", {
+                get: () => {
+                    return totalForced
+                }
+            })
+            Object.defineProperty(searched, "totalDropped", {
+                get: () => {
+                    return dropped.DECIMAL + dropped.TOO_LARGE + dropped.DUPLICATE
+                }
+            })
+            Object.defineProperty(searched, "totalDroppedDecimal", {
+                get: () => {
+                    return dropped.DECIMAL
+                }
+            })
+            Object.defineProperty(searched, "totalDroppedTooLarge", {
+                get: () => {
+                    return dropped.TOO_LARGE
+                }
+            })
+            Object.defineProperty(searched, "totalDroppedDuplicate", {
+                get: () => {
+                    return dropped.DUPLICATE
+                }
+            })
+            Object.defineProperty(searched, "totalDroppedCommutative", {
+                get: () => {
+                    return dropped.COMMUTATIVE
+                }
+            })
+            let dropped = {
+                DECIMAL: 0,
+                TOO_LARGE: 0,
+                DUPLICATE: 0,
+                COMMUTATIVE: 0
+            }
             await do_stuff(0)
             if (result) {
                 return result;
@@ -394,28 +429,38 @@
         if (ev.data.type == "finished") {
             //console.log(ev.data)
             const finishedId = ev.data.jobId
-            jobs[finishedId] ?. (ev.data);
+            jobs[finishedId] ?.(ev.data);
         } else if (ev.data.type == "progressUpdate") {
             document.getElementsByClassName("box")[0].style.width = `${100*(ev.data.progress/ev.data.max)}%`
         }
     }
     let hasRunRunning = false;
     let latestJobId = -1;
+
     function solveNumberGame(target, values) {
         if (hasRunRunning) return;
         let jobId = jobIdGenerator()
         hasRunRunning = true;
         latestJobId = jobId;
-        worker.postMessage({ target, values, jobId, action: "solve" })
+        worker.postMessage({
+            target,
+            values,
+            jobId,
+            action: "solve"
+        })
         let promise = new Promise((resolve) => {
             hasRunRunning = false;
             jobs[jobId] = resolve;
         })
         return promise
     }
+
     function cancelLatestRun() {
         if (!hasRunRunning) return;
-        worker.postMessage({ action: "end", latestJobId })
+        worker.postMessage({
+            action: "end",
+            latestJobId
+        })
     }
     window.cancelLatestRun = cancelLatestRun;
     window.solveNumberGame = solveNumberGame;
@@ -425,23 +470,25 @@
 const BRACKET_COLOUR = ""
 const NUMBER_COLOUR = ""
 const OPERATION_COLOUR = ""
-function beautifyEquation(equation="") {
+
+function beautifyEquation(equation = "") {
     let removeFirstBracket = (`[${equation}]`.includes("[ (") && `[${equation}]`.includes(") ]"))
     console.log(removeFirstBracket)
     if (removeFirstBracket) {
-        equation = equation.replace("[(","[")
+        equation = equation.replace("[(", "[")
         equation[equation.lastIndexOf(")")] = "";
     }
     return equation
-    .replaceAll("(", BRACKET_COLOUR + "(" + NUMBER_COLOUR)
-    .replaceAll("-", OPERATION_COLOUR + " \u2212 " + NUMBER_COLOUR)
-    .replaceAll("/", OPERATION_COLOUR + " \u00f7 " + NUMBER_COLOUR)
-    .replaceAll("+", OPERATION_COLOUR + " \u002b " + NUMBER_COLOUR)
-    .replaceAll("x", OPERATION_COLOUR + " \u00d7 " + NUMBER_COLOUR)
-    .replaceAll(")", BRACKET_COLOUR + ")" + NUMBER_COLOUR)
-    .replaceAll("^", OPERATION_COLOUR + "^" + ""+NUMBER_COLOUR)
-    .replaceAll(/[\[\]]/g,"")
+        .replaceAll("(", BRACKET_COLOUR + "(" + NUMBER_COLOUR)
+        .replaceAll("-", OPERATION_COLOUR + " \u2212 " + NUMBER_COLOUR)
+        .replaceAll("/", OPERATION_COLOUR + " \u00f7 " + NUMBER_COLOUR)
+        .replaceAll("+", OPERATION_COLOUR + " \u002b " + NUMBER_COLOUR)
+        .replaceAll("x", OPERATION_COLOUR + " \u00d7 " + NUMBER_COLOUR)
+        .replaceAll(")", BRACKET_COLOUR + ")" + NUMBER_COLOUR)
+        .replaceAll("^", OPERATION_COLOUR + "^" + "" + NUMBER_COLOUR)
+        .replaceAll(/[\[\]]/g, "")
 }
+
 function addInputElement() {
     let ele = document.createElement("input")
     ele.classList.add("__number")
@@ -450,7 +497,11 @@ function addInputElement() {
     document.getElementById('numbers').appendChild(ele)
     let ele2 = document.createElement("button")
     let ele3 = document.createElement("br")
-    ele2.onclick = ()=>{removeInputElement(ele);removeInputElement(ele2);removeInputElement(ele3)};
+    ele2.onclick = () => {
+        removeInputElement(ele);
+        removeInputElement(ele2);
+        removeInputElement(ele3)
+    };
     ele2.innerText = "x"
     ele2.tabIndex = -1
     ele2.id = document.getElementById('numbers').children.length
@@ -458,17 +509,21 @@ function addInputElement() {
     document.getElementById('numbers').appendChild(ele3)
     // <button onclick="removeInputElement(0)">❌</button>
 }
+
 function removeInputElement(element) {
     element.remove()
 }
+
 function doGameSolve() {
     document.getElementById("result").innerHTML = "solving"
-    let values = [...document.getElementById('numbers').getElementsByClassName("__number")].map(a=>{return a.value*1}).filter(a=>a)
+    let values = [...document.getElementById('numbers').getElementsByClassName("__number")].map(a => {
+        return a.value * 1
+    }).filter(a => a)
     let target = document.getElementsByName("target")[0].value
     //console.log(target,values)
-    solveNumberGame(target,values).then(a=>{
+    solveNumberGame(target, values).then(a => {
         if (a.equation) {
-        //console.log(a)
+            //console.log(a)
             document.getElementById("result").innerHTML = beautifyEquation(a.equation) + " = " + a.target
         } else {
             document.getElementById("result").innerHTML = "no solutions"
