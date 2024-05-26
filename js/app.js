@@ -93,14 +93,14 @@ capeImg.src = cape_urls[capeSelector[capeSelector.selectedIndex].id] || ""
 capeSelector.addEventListener("change", () => {
     if (cape_urls[capeSelector[capeSelector.selectedIndex].id]) {
         if (cape_data[capeSelector[capeSelector.selectedIndex].id]) {
-            AxolotlGenerator.capeBuffer = cape_data[capeSelector[capeSelector.selectedIndex].id]
+            AxolotlSkinGenerator.capeBuffer = cape_data[capeSelector[capeSelector.selectedIndex].id]
             updateCape()
         } else {
             let newCape = cape_urls[capeSelector[capeSelector.selectedIndex].id]
             capeImg.src = newCape
         }
     } else {
-        AxolotlGenerator.capeBuffer = new Uint8Array(32 * 64 * 4)
+        AxolotlSkinGenerator.capeBuffer = new Uint8Array(32 * 64 * 4)
         updateCape()
     }
 })
@@ -229,7 +229,7 @@ function getAccessoryOptions() {
 
 function updateColours(slimChange = false) {
     isFileSelected = false
-    AxolotlGenerator.makeAxolotlRGB(
+    AxolotlSkinGenerator.makeAxolotlRGB(
         colourPickers[0].value,
         colourPickers[1].value,
         colourPickers[2].value,
@@ -242,7 +242,7 @@ function updateColours(slimChange = false) {
     )
     id = createId()
     setupCanvasDrawing(slimChange)
-    favicon.href = AxolotlGenerator.headPNG
+    favicon.href = AxolotlSkinGenerator.headPNG
 }
 
 function onAppLoaded() {
@@ -257,17 +257,17 @@ function onAppLoaded() {
             if (imgToLoad.complete) resolve();
         })
     })).then(() => {
-        AxolotlGenerator.canvasContext = canvas.getContext("2d", {
+        AxolotlSkinGenerator.canvasContext = canvas.getContext("2d", {
             willReadFrequently: true
         })
-        AxolotlGenerator.headCanvasContext = headRenderCanvas.getContext("2d", {
+        AxolotlSkinGenerator.headCanvasContext = headRenderCanvas.getContext("2d", {
             willReadFrequently: true
         })
-        AxolotlGenerator.canvasContext.drawImage(img, 0, 0)
+        AxolotlSkinGenerator.canvasContext.drawImage(img, 0, 0)
         if (document.location.hash.length != 0 || document.location.search.length != 0) {
             loadIDString(((document.location.hash.length != 0) ? document.location.hash : document.location.search).replace(/[#?]{1}/, ""))
         } else {
-            AxolotlGenerator.makeAxolotlRGB(
+            AxolotlSkinGenerator.makeAxolotlRGB(
                 "#B0D5FC",
                 "#E2EEFF",
                 "#E2AAC0",
@@ -278,21 +278,21 @@ function onAppLoaded() {
                 false,
                 getAccessoryOptions()
             )
-            favicon.href = AxolotlGenerator.headPNG
+            favicon.href = AxolotlSkinGenerator.headPNG
         }
 
         function redoCapeTexture() {
             if (cape_urls[capeSelector[capeSelector.selectedIndex].id]) {
                 if (cape_data[capeSelector[capeSelector.selectedIndex].id]) {
-                    AxolotlGenerator.capeBuffer = cape_data[capeSelector[capeSelector.selectedIndex].id]
+                    AxolotlSkinGenerator.capeBuffer = cape_data[capeSelector[capeSelector.selectedIndex].id]
                 } else {
                     testCanvasContext.drawImage(capeImg, 0, 0)
                     let newImageData = testCanvasContext.getImageData(0, 0, 64, 32)
-                    AxolotlGenerator.capeBuffer = newImageData.data
+                    AxolotlSkinGenerator.capeBuffer = newImageData.data
                     cape_data[capeSelector[capeSelector.selectedIndex].id] = newImageData.data
                 }
             } else {
-                AxolotlGenerator.capeBuffer = new Uint8Array(32 * 4 * 64)
+                AxolotlSkinGenerator.capeBuffer = new Uint8Array(32 * 4 * 64)
             }
             updateCape()
         }
@@ -335,13 +335,13 @@ function loadSkinFile() {
         customSkinKeepOption.disabled = false;
         customSkinKeepOption.checked = true
         customImg.onload = () => {
-            AxolotlGenerator.canvasContext.clearRect(0, 0, 64, 64)
-            AxolotlGenerator.canvasContext.drawImage(customImg, 0, 0)
-            let arrayBuffer = AxolotlGenerator.canvasContext.getImageData(0, 0, 64, 64).data
-            AxolotlGenerator.arrayBuffer.set(arrayBuffer)
-            AxolotlGenerator.setSkinArrayBuffer.set(arrayBuffer)
+            AxolotlSkinGenerator.canvasContext.clearRect(0, 0, 64, 64)
+            AxolotlSkinGenerator.canvasContext.drawImage(customImg, 0, 0)
+            let arrayBuffer = AxolotlSkinGenerator.canvasContext.getImageData(0, 0, 64, 64).data
+            AxolotlSkinGenerator.arrayBuffer.set(arrayBuffer)
+            AxolotlSkinGenerator.setSkinArrayBuffer.set(arrayBuffer)
             setupCanvasDrawing()
-            favicon.href = AxolotlGenerator.headPNG
+            favicon.href = AxolotlSkinGenerator.headPNG
         }
         customImg.src = reader.result
         fileChooser.value = ""

@@ -12,20 +12,17 @@ function clamp(x, min, max) {
     if (x < min) return min;
     return x;
 }
-/**
- * Q: Why is everything here static
- * A: I likey green
- */
-class AxolotlGenerator {
+const AxolotlSkinGenerator = new Axolotl()
+class Axolotl {
     /** @type {CanvasRenderingContext2D} */
-    static canvasContext;
+    canvasContext;
     /** @type {CanvasRenderingContext2D} */
-    static headCanvasContext;
-    static headPNG = "data:image/png,base64;"
-    static arrayBuffer = new Uint8ClampedArray(4 * 64 * 64);
-    static capeBuffer = new Uint8ClampedArray(4 * 32 * 64);
-    static setSkinArrayBuffer = new Uint8ClampedArray(4 * 64 * 64);
-    static makeAxolotl(
+    headCanvasContext;
+    headPNG = "data:image/png,base64;"
+    arrayBuffer = new Uint8ClampedArray(4 * 64 * 64);
+    capeBuffer = new Uint8ClampedArray(4 * 32 * 64);
+    setSkinArrayBuffer = new Uint8ClampedArray(4 * 64 * 64);
+    makeAxolotl(
         edge = [Math.random() * 255, Math.random() * 255, Math.random() * 255, 255],
         middle = [Math.random() * 255, Math.random() * 255, Math.random() * 255, 255],
         lip = [255 - (edge[0] + middle[0]) / 2, 255 - (edge[1] + middle[1]) / 2, 255 - (edge[2] + middle[2]) / 2, 255],
@@ -152,7 +149,7 @@ class AxolotlGenerator {
         this.arrayBuffer.set(imageData.data)
         this.canvasContext.putImageData(imageData, 0, 0)
     }
-    static makeAxolotlRGB(
+    makeAxolotlRGB(
         EDGE_COLOUR = "#000000",
         MIDDLE_COLOUR = "#000000",
         MOUTH_COLOUR = "#000000",
