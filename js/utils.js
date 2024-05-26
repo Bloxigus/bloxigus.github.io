@@ -20,4 +20,49 @@ class Utils {
         }
         return arrayOfStrings
     }
+    /**
+     * Get a section of a Uint8ClampedArray
+     * @param {Uint8ClampedArray} fromArrayBuffer 
+     * @param {number} xStart
+     * @param {number} yStart  
+     * @param {number} width 
+     * @param {number} height
+     */
+    static getSubbufferFromBuffer(fromArrayBuffer, xStart, yStart, width, height) {
+        let data = new Uint8ClampedArray(width * height * 4);
+        for (let xp = 0; xp < width; xp++) {
+            for (let yp = 0; yp < height; yp++) {
+                let stride = ((yp) * width + xp) * 4;
+                let strideOriginal = ((yStart + yp) * 64 + (xStart + xp)) * 4
+                data[stride] = fromArrayBuffer[strideOriginal];
+                data[stride + 1] = fromArrayBuffer[strideOriginal + 1];
+                data[stride + 2] = fromArrayBuffer[strideOriginal + 2];
+                data[stride + 3] = fromArrayBuffer[strideOriginal + 3];
+            }
+        }
+        return data;
+    }
+    /**
+     * 
+     * @param {Uint8ClampedArray} headBuffer 
+     * @param {Uint8ClampedArray} hatBuffer 
+     */
+    static combineHeadAndHat(headBuffer, hatBuffer) {
+        let finalBuffer = new Uint8ClampedArray(headBuffer.length)
+        for (let stride = 0; stride < headBuffer.byteLength; stride += 4) {
+            let headAlpha = hatBuffer[stride + 3] / 255;
+            [
+                finalBuffer[stride + 0],
+                finalBuffer[stride + 1],
+                finalBuffer[stride + 2],
+                finalBuffer[stride + 3]
+            ] = [
+                hatBuffer[stride + 0] * headAlpha + headBuffer[stride + 0] * (1 - headAlpha),
+                hatBuffer[stride + 1] * headAlpha + headBuffer[stride + 1] * (1 - headAlpha),
+                hatBuffer[stride + 2] * headAlpha + headBuffer[stride + 2] * (1 - headAlpha),
+                hatBuffer[stride + 3] * headAlpha + headBuffer[stride + 3] * (1 - headAlpha)
+            ];
+        }
+        return finalBuffer;
+    }
 }

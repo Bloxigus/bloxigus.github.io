@@ -5,6 +5,8 @@ let customImg = document.querySelector("img[data-skin=custom]");
 let capeImg = document.querySelector("img[data-skin=cape]");
 let canvas = document.querySelector("canvas[data-canvas=skin]");
 let testCanvas = document.querySelector("canvas[data-canvas=cape]");
+let headRenderCanvas = document.querySelector("canvas[data-canvas=head]");
+let favicon = document.querySelector("link[data-icon=head]");
 let testCanvasContext = testCanvas.getContext("2d", {
     willReadFrequently: true
 })
@@ -111,7 +113,7 @@ loadFile.addEventListener("click", () => {
     fileChooser.click()
 })
 customSkinKeepOption.addEventListener("change", () => {
-    updateColours()
+    if (!customSkinKeepOption.checked) updateColours()
 })
 accessorySelector.addEventListener("change", () => {
     if (accessorySelector[accessorySelector.selectedIndex].id == "tomihat") {
@@ -240,9 +242,11 @@ function updateColours(slimChange = false) {
     )
     id = createId()
     setupCanvasDrawing(slimChange)
+    favicon.href = AxolotlGenerator.headPNG
 }
 
 function onAppLoaded() {
+    slimCheck.checked = true
     /**
      * Wait for all required images to load
      */
@@ -254,6 +258,9 @@ function onAppLoaded() {
         })
     })).then(() => {
         AxolotlGenerator.canvasContext = canvas.getContext("2d", {
+            willReadFrequently: true
+        })
+        AxolotlGenerator.headCanvasContext = headRenderCanvas.getContext("2d", {
             willReadFrequently: true
         })
         AxolotlGenerator.canvasContext.drawImage(img, 0, 0)
@@ -271,6 +278,7 @@ function onAppLoaded() {
                 false,
                 getAccessoryOptions()
             )
+            favicon.href = AxolotlGenerator.headPNG
         }
 
         function redoCapeTexture() {
@@ -323,7 +331,6 @@ function loadSkinFile() {
     let reader = new FileReader();
     reader.onload = () => {
         isFileSelected = true
-        colourPickers[7].value = ""
         lastFileUrl = reader.result
         customSkinKeepOption.disabled = false;
         customSkinKeepOption.checked = true
@@ -334,6 +341,7 @@ function loadSkinFile() {
             AxolotlGenerator.arrayBuffer.set(arrayBuffer)
             AxolotlGenerator.setSkinArrayBuffer.set(arrayBuffer)
             setupCanvasDrawing()
+            favicon.href = AxolotlGenerator.headPNG
         }
         customImg.src = reader.result
         fileChooser.value = ""

@@ -12,11 +12,18 @@ function clamp(x, min, max) {
     if (x < min) return min;
     return x;
 }
+/**
+ * Q: Why is everything here static
+ * A: I likey green
+ */
 class AxolotlGenerator {
     /** @type {CanvasRenderingContext2D} */
     static canvasContext;
+    /** @type {CanvasRenderingContext2D} */
+    static headCanvasContext;
+    static headPNG = "data:image/png,base64;"
     static arrayBuffer = new Uint8ClampedArray(4 * 64 * 64);
-    static capeBuffer = new Uint8ClampedArray(4 * 32 * 64)
+    static capeBuffer = new Uint8ClampedArray(4 * 32 * 64);
     static setSkinArrayBuffer = new Uint8ClampedArray(4 * 64 * 64);
     static makeAxolotl(
         edge = [Math.random() * 255, Math.random() * 255, Math.random() * 255, 255],
@@ -32,7 +39,8 @@ class AxolotlGenerator {
         slim = false
     ) {
         this.canvasContext.clearRect(0, 0, 64, 64)
-        this.canvasContext.drawImage((slim) ? imgSlim : img, 0, 0);
+        if (!customSkinKeepOption.checked) this.canvasContext.drawImage((slim) ? imgSlim : img, 0, 0);
+        else this.canvasContext.drawImage(customImg, 0, 0)
         if (swapIfBad && (fin1[0] + fin1[1] + fin1[2]) < (fin5[0] + fin5[1] + fin5[2])) {
             [fin1, fin5] = [fin5, fin1]
         }
@@ -68,14 +76,14 @@ class AxolotlGenerator {
         }
         let imageData = this.canvasContext.getImageData(0, 0, 64, 64)
         let data = imageData.data;
-        for (let location in locations) {
-            for (let loc2 in locations[location]) {
-                let type = location
+        for (let partLocation in locations) {
+            for (let loc2 in locations[partLocation]) {
+                let type = partLocation
                 /**
                  * @type {{top: string[];side_left: string[];side_right: string[];front: string[];base: string[];back: string[];}}
                  */
                 let colourLocation = ((slim) ? colourLocationsSlim : colourLocations)[type]
-                let pos = ((slim) ? locationsSlim : locations)[location][loc2]
+                let pos = ((slim) ? locationsSlim : locations)[partLocation][loc2]
                 let innerLocations = {
                     top: [colourLocation["side_right"][0].length, 0, colourLocation["side_right"][0].length + colourLocation["top"][0].length - 1, colourLocation["top"].length - 1],
                     base: [colourLocation["side_right"][0].length + colourLocation["top"][0].length, 0, 2 * colourLocation["side_right"][0].length + colourLocation["top"][0].length - 1, colourLocation["top"].length - 1],
@@ -92,13 +100,9 @@ class AxolotlGenerator {
                      */
                     let locationType = location
                     let l2 = innerLocations[actL];
-                    let copyofColourLocation = {
-                        ...colourLocation
-                    }
-                    // if (actL.includes("left")) for (const key in copyofColourLocation) { copyofColourLocation[key] = copyofColourLocation[key].map(e => { return (e.split("").reverse().join("")) }) }
-                    for (let i2 = 0; i2 < copyofColourLocation[locationType].length; i2++) {
-                        for (let i3 = 0; i3 < copyofColourLocation[locationType][0].length; i3++) {
-                            const codeLetter = copyofColourLocation[locationType][i2][i3];
+                    for (let i2 = 0; i2 < colourLocation[locationType].length; i2++) {
+                        for (let i3 = 0; i3 < colourLocation[locationType][0].length; i3++) {
+                            const codeLetter = colourLocation[locationType][i2][i3];
                             const accessoryCodeLetter = accessoryOptions ?. colourLocations ?. [type] ?. [locationType] ?. [i2] ?. [i3];
                             // console.log(accessoryOptions?.colourLocations?.[type]?.[locationType]?.[i2]?.[i3])
                             let xpos = pos[0] + l2[0] + i3;
@@ -138,6 +142,12 @@ class AxolotlGenerator {
                 }
             }
         }
+        let headImageData = new ImageData(8, 8);
+        let headBuffer = Utils.getSubbufferFromBuffer(imageData.data, 8, 8, 8, 8);
+        let hatBuffer = Utils.getSubbufferFromBuffer(imageData.data, 8 + 32, 8, 8, 8)
+        headImageData.data.set(Utils.combineHeadAndHat(headBuffer, hatBuffer))
+        this.headCanvasContext.putImageData(headImageData, 0, 0)
+        this.headPNG = this.headCanvasContext.canvas.toDataURL()
 
         this.arrayBuffer.set(imageData.data)
         this.canvasContext.putImageData(imageData, 0, 0)
