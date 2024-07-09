@@ -282,7 +282,7 @@ let colourLocations = {
             "XXXXXXXX",
             "XXCCCCXX",
             "XXCCCCXX",
-            "XXXCCXXX"
+            "XXKCCKXX"
         ],
         side_left: [
             "XXXX",
