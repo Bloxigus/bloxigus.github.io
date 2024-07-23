@@ -10,7 +10,7 @@ div p {
     margin: 3px;
 }
 div.break {
-    height: 30px;
+    height: 15px;
 }
 div * {
     font-size: 30px;
@@ -21,6 +21,9 @@ input[type="color"] {
     width: 200px;
 }
 input[type="file"] {
+    display: none;
+}
+div.disabled {
     display: none;
 }
 input.idBox {
