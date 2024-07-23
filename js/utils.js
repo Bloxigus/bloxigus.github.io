@@ -43,6 +43,51 @@ class Utils {
         return data;
     }
     /**
+     * Puts a new section into a Uint8ClampedArray
+     * @param {Uint8ClampedArray} targetArrayBuffer 
+     * @param {Uint8ClampedArray} fromArrayBuffer 
+     * @param {number} xStart
+     * @param {number} yStart  
+     * @param {number} width 
+     * @param {number} height
+     */
+    static putSubbufferInBuffer(targetArrayBuffer, fromArrayBuffer, xStart, yStart, width, height) {
+        for (let xp = 0; xp < width; xp++) {
+            for (let yp = 0; yp < height; yp++) {
+                let stride = ((yStart + yp) * 64 + (xStart + xp)) * 4;
+                let strideOriginal = ((yp) * width + xp) * 4;
+                targetArrayBuffer[stride] = fromArrayBuffer[strideOriginal];
+                targetArrayBuffer[stride + 1] = fromArrayBuffer[strideOriginal + 1];
+                targetArrayBuffer[stride + 2] = fromArrayBuffer[strideOriginal + 2];
+                targetArrayBuffer[stride + 3] = fromArrayBuffer[strideOriginal + 3];
+            }
+        }
+        return targetArrayBuffer;
+    }
+    /**
+     * Puts a new section into a Uint8ClampedArray
+     * @param {Uint8ClampedArray} targetArrayBuffer 
+     * @param {Uint8ClampedArray} fromArrayBuffer 
+     * @param {number} xStart
+     * @param {number} yStart  
+     * @param {number} width 
+     * @param {number} height
+     */
+    static reverseUint8ClampedArray(arrayBuffer, width, height) {
+        let data = new Uint8ClampedArray(width * height * 4);
+        for (let xp = width; xp > 0; xp--) {
+            for (let yp = 0; yp < height; yp++) {
+                let stride = ((yp) * width + (width - xp)) * 4;
+                let strideOriginal = ((yp + 0) * width + (xp-1)) * 4;
+                data[stride] = arrayBuffer[strideOriginal];
+                data[stride + 1] = arrayBuffer[strideOriginal + 1];
+                data[stride + 2] = arrayBuffer[strideOriginal + 2];
+                data[stride + 3] = arrayBuffer[strideOriginal + 3];
+            }
+        }
+        return data;
+    }
+    /**
      * 
      * @param {Uint8ClampedArray} headBuffer 
      * @param {Uint8ClampedArray} hatBuffer 

@@ -703,7 +703,7 @@ let cubes = {
             top: [36, 48],
             left: [32, 52],
             right: [40, 52],
-            back: [36, 52]
+            back: [44, 52]
         }
     },
     leftArm: {
@@ -849,7 +849,7 @@ let cubesSlim = {
             top: [36, 48],
             left: [32, 52],
             right: [39, 52],
-            back: [35, 52]
+            back: [45, 52]
         }
     },
     leftArm: {

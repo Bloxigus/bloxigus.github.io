@@ -11,6 +11,7 @@ let testCanvasContext = testCanvas.getContext("2d", {
     willReadFrequently: true
 })
 let slimCheck = document.querySelector("input[data-check=slim]");
+let animateCheck = document.querySelector("input[data-check=animate]");
 let slim = false
 const cape_urls = {
     "cherry_blossom": "./images/capes/cherryblossom.png",
@@ -49,10 +50,12 @@ console.log("%cAxolotl Skin Generator\n" + (window.chrome ? "" : "\n\n\n") + "%c
     "font-size: 10px;"
 ].join(" "))
 div.style.height = `${window.innerHeight - 1}px`
-if (window.innerHeight > window.innerWidth) {
+if (window.innerHeight > window.innerWidth)
+{
     div.style.width = `${window.innerWidth - 1}px`
     div.style.height = `auto`
-} else {
+} else
+{
     div.style.width = `calc(100% - ${(window.innerHeight - 1) / 2}px)`
     div.style.height = `${window.innerHeight - 1}px`
 }
@@ -90,57 +93,73 @@ customSkinKeepOption.disabled = true;
 customSkinKeepOption.checked = false;
 let tomiHatOptions = document.getElementById("tomiOptions");
 capeImg.src = cape_urls[capeSelector[capeSelector.selectedIndex].id] || ""
-capeSelector.addEventListener("change", () => {
-    if (cape_urls[capeSelector[capeSelector.selectedIndex].id]) {
-        if (cape_data[capeSelector[capeSelector.selectedIndex].id]) {
+capeSelector.addEventListener("change", () =>
+{
+    if (cape_urls[capeSelector[capeSelector.selectedIndex].id])
+    {
+        if (cape_data[capeSelector[capeSelector.selectedIndex].id])
+        {
             AxolotlSkinGenerator.capeBuffer = cape_data[capeSelector[capeSelector.selectedIndex].id]
             updateCape()
-        } else {
+        } else
+        {
             let newCape = cape_urls[capeSelector[capeSelector.selectedIndex].id]
             capeImg.src = newCape
         }
-    } else {
+    } else
+    {
         AxolotlSkinGenerator.capeBuffer = new Uint8Array(32 * 64 * 4)
         updateCape()
     }
 })
 let loadFile = document.getElementsByTagName("button")[3];
 let lastFileUrl = ""
-fileChooser.addEventListener("change", () => {
+fileChooser.addEventListener("change", () =>
+{
     loadSkinFile()
 })
-loadFile.addEventListener("click", () => {
+loadFile.addEventListener("click", () =>
+{
     fileChooser.click()
 })
-customSkinKeepOption.addEventListener("change", () => {
+customSkinKeepOption.addEventListener("change", () =>
+{
     if (!customSkinKeepOption.checked) updateColours()
 })
-accessorySelector.addEventListener("change", () => {
-    if (accessorySelector[accessorySelector.selectedIndex].id == "tomihat") {
+accessorySelector.addEventListener("change", () =>
+{
+    if (accessorySelector[accessorySelector.selectedIndex].id == "tomihat")
+    {
         tomiHatOptions.style.display = "block"
-    } else {
+    } else
+    {
         tomiHatOptions.style.display = "none"
     }
     updateColours()
 })
-copyRender.addEventListener("click", () => {
-    renderer.domElement.toBlob((blob) => {
+copyRender.addEventListener("click", () =>
+{
+    renderer.domElement.toBlob((blob) =>
+    {
         navigator.clipboard.write([new ClipboardItem({
             [blob.type]: blob
         })])
     })
 })
-slimCheck.addEventListener("change", () => {
+slimCheck.addEventListener("change", () =>
+{
     setSlim(slimCheck.checked)
     updateColours(true)
 })
-button.addEventListener("click", () => {
+button.addEventListener("click", () =>
+{
     let link = document.createElement('a');
     link.download = `AXOLOTL-${createId()}.png`;
     link.href = canvas.toDataURL()
     link.click();
 });
-random.addEventListener("click", () => {
+random.addEventListener("click", () =>
+{
     isFileSelected = false
     colourPickers[0].value = generateRandomRGB()
     colourPickers[1].value = generateRandomRGB()
@@ -151,30 +170,39 @@ random.addEventListener("click", () => {
     colourPickers[6].value = generateRandomRGB()
     updateColours()
 });
-for (let i = 0; i < colourPickers.length; i++) {
+for (let i = 0; i < colourPickers.length; i++)
+{
     let picker = colourPickers[i];
-    picker.addEventListener("input", () => {
+    picker.addEventListener("input", () =>
+    {
         updateColours(false)
     });
-    picker.addEventListener("change", () => {
+    picker.addEventListener("change", () =>
+    {
         updateColours(false)
     });
 }
-for (let i = 0; i < tomiHatPickers.length; i++) {
+for (let i = 0; i < tomiHatPickers.length; i++)
+{
     let picker = tomiHatPickers[i];
-    picker.addEventListener("input", () => {
+    picker.addEventListener("input", () =>
+    {
         updateColours(false)
     });
-    picker.addEventListener("change", () => {
+    picker.addEventListener("change", () =>
+    {
         updateColours(false)
     });
 }
 
-function loadIDString(id) {
-    if (id.length == 36) {
+function loadIDString(id)
+{
+    if (id.length == 36)
+    {
         isFileSelected = false
         let isSlim = /[S]/.test(id.split("")[35]);
-        [...id.matchAll(/.{5}/g)].map((a, i) => {
+        [...id.matchAll(/.{5}/g)].map((a, i) =>
+        {
             let decimal = parseInt(a[0], 36)
             let rgbDecimal = [decimal >> 16 & 255, decimal >> 8 & 255, decimal & 255]
             let r = rgbDecimal[0].toString(16)
@@ -188,10 +216,12 @@ function loadIDString(id) {
         setSlim(isSlim)
         updateColours(true)
         id = createId()
-    } else if (id.length == 35) {
+    } else if (id.length == 35)
+    {
         isFileSelected = false
         let isSlim = false;
-        [...id.matchAll(/.{5}/g)].map((a, i) => {
+        [...id.matchAll(/.{5}/g)].map((a, i) =>
+        {
             let decimal = parseInt(a[0], 36)
             let rgbDecimal = [decimal >> 16 & 255, decimal >> 8 & 255, decimal & 255]
             let r = rgbDecimal[0].toString(16)
@@ -208,9 +238,11 @@ function loadIDString(id) {
     }
 }
 
-function getAccessoryOptions() {
+function getAccessoryOptions()
+{
     let palette = {}
-    if (accessorySelector[accessorySelector.selectedIndex].id == "tomihat") {
+    if (accessorySelector[accessorySelector.selectedIndex].id == "tomihat")
+    {
         palette = {
             "1": Utils.rgbToArray(tomiHatPickers[0].value),
             "2": Utils.rgbToArray(tomiHatPickers[1].value),
@@ -227,7 +259,8 @@ function getAccessoryOptions() {
     }
 }
 
-function updateColours(slimChange = false) {
+function updateColours(slimChange = false)
+{
     isFileSelected = false
     AxolotlSkinGenerator.makeAxolotlRGB(
         colourPickers[0].value,
@@ -245,18 +278,22 @@ function updateColours(slimChange = false) {
     favicon.href = AxolotlSkinGenerator.headPNG
 }
 
-function onAppLoaded() {
+function onAppLoaded()
+{
     slimCheck.checked = true
     /**
      * Wait for all required images to load
      */
-    Promise.all([img, imgSlim, capeImg].map(imgToLoad => {
-        return new Promise(resolve => {
+    Promise.all([img, imgSlim, capeImg].map(imgToLoad =>
+    {
+        return new Promise(resolve =>
+        {
             if (imgToLoad.complete) resolve();
             imgToLoad.addEventListener("load", resolve)
             if (imgToLoad.complete) resolve();
         })
-    })).then(() => {
+    })).then(() =>
+    {
         AxolotlSkinGenerator.canvasContext = canvas.getContext("2d", {
             willReadFrequently: true
         })
@@ -264,9 +301,11 @@ function onAppLoaded() {
             willReadFrequently: true
         })
         AxolotlSkinGenerator.canvasContext.drawImage(img, 0, 0)
-        if (document.location.hash.length != 0 || document.location.search.length != 0) {
+        if (document.location.hash.length != 0 || document.location.search.length != 0)
+        {
             loadIDString(((document.location.hash.length != 0) ? document.location.hash : document.location.search).replace(/[#?]{1}/, ""))
-        } else {
+        } else
+        {
             AxolotlSkinGenerator.makeAxolotlRGB(
                 "#B0D5FC",
                 "#E2EEFF",
@@ -281,17 +320,22 @@ function onAppLoaded() {
             favicon.href = AxolotlSkinGenerator.headPNG
         }
 
-        function redoCapeTexture() {
-            if (cape_urls[capeSelector[capeSelector.selectedIndex].id]) {
-                if (cape_data[capeSelector[capeSelector.selectedIndex].id]) {
+        function redoCapeTexture()
+        {
+            if (cape_urls[capeSelector[capeSelector.selectedIndex].id])
+            {
+                if (cape_data[capeSelector[capeSelector.selectedIndex].id])
+                {
                     AxolotlSkinGenerator.capeBuffer = cape_data[capeSelector[capeSelector.selectedIndex].id]
-                } else {
+                } else
+                {
                     testCanvasContext.drawImage(capeImg, 0, 0)
                     let newImageData = testCanvasContext.getImageData(0, 0, 64, 32)
                     AxolotlSkinGenerator.capeBuffer = newImageData.data
                     cape_data[capeSelector[capeSelector.selectedIndex].id] = newImageData.data
                 }
-            } else {
+            } else
+            {
                 AxolotlSkinGenerator.capeBuffer = new Uint8Array(32 * 4 * 64)
             }
             updateCape()
@@ -306,7 +350,8 @@ function onAppLoaded() {
 }
 let id = createId()
 
-function createId() {
+function createId()
+{
     let a0 = [...parseInt(colourPickers[0].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
     let a1 = [...parseInt(colourPickers[1].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
     let a2 = [...parseInt(colourPickers[2].value.split("#")[1], 16).toString(36).split("").reverse(), "0", "0", "0", "0"].slice(0, 5).reverse().join("")
@@ -317,7 +362,8 @@ function createId() {
     return a0 + a1 + a2 + a3 + a4 + a5 + a6 + (slim ? "S" : "R")
 }
 
-function generateRandomRGB() {
+function generateRandomRGB()
+{
     let r = Math.floor(Math.random() * 256).toString(16)
     let g = Math.floor(Math.random() * 256).toString(16)
     let b = Math.floor(Math.random() * 256).toString(16)
@@ -327,20 +373,77 @@ function generateRandomRGB() {
     return `#${r + g + b}`
 }
 
-function loadSkinFile() {
+function fixSmallSkinFile(imageData)
+{
+    let cubeMap = cubes;
+    if (slim) cubeMap = cubesSlim
+
+    let topArmBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftArm.uv.top[0], cubeMap.leftArm.uv.top[1], cubeMap.leftArm.size[0], cubeMap.leftArm.size[2])
+    let baseArmBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftArm.uv.bottom[0], cubeMap.leftArm.uv.bottom[1], cubeMap.leftArm.size[0], cubeMap.leftArm.size[2])
+    let frontArmBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftArm.uv.front[0], cubeMap.leftArm.uv.front[1], cubeMap.leftArm.size[0], cubeMap.leftArm.size[1])
+    let backArmBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftArm.uv.back[0], cubeMap.leftArm.uv.back[1], cubeMap.leftArm.size[0], cubeMap.leftArm.size[1])
+    let leftSideArmBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftArm.uv.left[0], cubeMap.leftArm.uv.left[1], cubeMap.leftArm.size[2], cubeMap.leftArm.size[1])
+    let rightSideArmBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftArm.uv.right[0], cubeMap.leftArm.uv.right[1], cubeMap.leftArm.size[2], cubeMap.leftArm.size[1])
+
+    let topLegBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftLeg.uv.top[0], cubeMap.leftLeg.uv.top[1], cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[2])
+    let baseLegBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftLeg.uv.bottom[0], cubeMap.leftLeg.uv.bottom[1], cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[2])
+    let frontLegBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftLeg.uv.front[0], cubeMap.leftLeg.uv.front[1], cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[1])
+    let backLegBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftLeg.uv.back[0], cubeMap.leftLeg.uv.back[1], cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[1])
+    let leftSideLegBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftLeg.uv.left[0], cubeMap.leftLeg.uv.left[1], cubeMap.leftLeg.size[2], cubeMap.leftLeg.size[1])
+    let rightSideLegBuffer = Utils.getSubbufferFromBuffer(imageData.data, cubeMap.leftLeg.uv.right[0], cubeMap.leftLeg.uv.right[1], cubeMap.leftLeg.size[2], cubeMap.leftLeg.size[1])
+
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(topArmBuffer, cubeMap.leftArm.size[0], cubeMap.leftArm.size[2]), cubeMap.rightArm.uv.top[0], cubeMap.rightArm.uv.top[1], cubeMap.leftArm.size[0], cubeMap.leftArm.size[2])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(baseArmBuffer, cubeMap.leftArm.size[0], cubeMap.leftArm.size[2]), cubeMap.rightArm.uv.bottom[0], cubeMap.rightArm.uv.bottom[1], cubeMap.leftArm.size[0], cubeMap.leftArm.size[2])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(frontArmBuffer, cubeMap.leftArm.size[0], cubeMap.leftArm.size[1]), cubeMap.rightArm.uv.front[0], cubeMap.rightArm.uv.front[1], cubeMap.leftArm.size[0], cubeMap.leftArm.size[1])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(backArmBuffer, cubeMap.leftArm.size[0], cubeMap.leftArm.size[1]), cubeMap.rightArm.uv.back[0], cubeMap.rightArm.uv.back[1], cubeMap.leftArm.size[0], cubeMap.leftArm.size[1])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(leftSideArmBuffer, cubeMap.leftArm.size[2], cubeMap.leftArm.size[1]), cubeMap.rightArm.uv.right[0], cubeMap.rightArm.uv.right[1], cubeMap.leftArm.size[2], cubeMap.leftArm.size[1])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(rightSideArmBuffer, cubeMap.leftArm.size[2], cubeMap.leftArm.size[1]), cubeMap.rightArm.uv.left[0], cubeMap.rightArm.uv.left[1], cubeMap.leftArm.size[2], cubeMap.leftArm.size[1])
+
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(topLegBuffer, cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[2]), cubeMap.rightLeg.uv.top[0], cubeMap.rightLeg.uv.top[1], cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[2])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(baseLegBuffer, cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[2]), cubeMap.rightLeg.uv.bottom[0], cubeMap.rightLeg.uv.bottom[1], cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[2])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(frontLegBuffer, cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[1]), cubeMap.rightLeg.uv.front[0], cubeMap.rightLeg.uv.front[1], cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[1])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(backLegBuffer, cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[1]), cubeMap.rightLeg.uv.back[0], cubeMap.rightLeg.uv.back[1], cubeMap.leftLeg.size[0], cubeMap.leftLeg.size[1])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(leftSideLegBuffer, cubeMap.leftLeg.size[2], cubeMap.leftLeg.size[1]), cubeMap.rightLeg.uv.right[0], cubeMap.rightLeg.uv.right[1], cubeMap.leftLeg.size[2], cubeMap.leftLeg.size[1])
+    Utils.putSubbufferInBuffer(imageData.data, Utils.reverseUint8ClampedArray(rightSideLegBuffer, cubeMap.leftLeg.size[2], cubeMap.leftLeg.size[1]), cubeMap.rightLeg.uv.left[0], cubeMap.rightLeg.uv.left[1], cubeMap.leftLeg.size[2], cubeMap.leftLeg.size[1])
+
+}
+
+function loadSkinFile()
+{
     let reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = () =>
+    {
         isFileSelected = true
         lastFileUrl = reader.result
         customSkinKeepOption.disabled = false;
         customSkinKeepOption.checked = true
-        customImg.onload = () => {
+        customImg.onload = () =>
+        {
             AxolotlSkinGenerator.canvasContext.clearRect(0, 0, 64, 64)
             AxolotlSkinGenerator.canvasContext.drawImage(customImg, 0, 0)
-            let arrayBuffer = AxolotlSkinGenerator.canvasContext.getImageData(0, 0, 64, 64).data
-            AxolotlSkinGenerator.arrayBuffer.set(arrayBuffer)
-            AxolotlSkinGenerator.setSkinArrayBuffer.set(arrayBuffer)
+            let arrayBuffer = AxolotlSkinGenerator.canvasContext.getImageData(0, 0, 64, 64)
+
+            // Im feeling pain rn
+            if (customImg.height == 32)
+            {
+                fixSmallSkinFile(arrayBuffer);
+                AxolotlSkinGenerator.canvasContext.putImageData(arrayBuffer, 0, 0)
+            }
+
+            AxolotlSkinGenerator.arrayBuffer.set(arrayBuffer.data)
+            AxolotlSkinGenerator.setSkinArrayBuffer.set(arrayBuffer.data)
+
+            let headImageData = new ImageData(8, 8);
+            let headBuffer = Utils.getSubbufferFromBuffer(arrayBuffer.data, cubes.head.uv.front[0], cubes.head.uv.front[1], 8, 8);
+            let hatBuffer = Utils.getSubbufferFromBuffer(arrayBuffer.data, outerLayerCubes.head.uv.front[0], outerLayerCubes.head.uv.front[1], 8, 8)
+            headImageData.data.set(Utils.combineHeadAndHat(headBuffer, hatBuffer))
+            AxolotlSkinGenerator.headCanvasContext.putImageData(headImageData, 0, 0)
+            AxolotlSkinGenerator.headPNG = AxolotlSkinGenerator.headCanvasContext.canvas.toDataURL()
+
+
+
             setupCanvasDrawing()
+
             favicon.href = AxolotlSkinGenerator.headPNG
         }
         customImg.src = reader.result

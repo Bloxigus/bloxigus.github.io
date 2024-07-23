@@ -9,6 +9,9 @@ div#tomiOptions {
 div p {
     margin: 3px;
 }
+div.break {
+    height: 30px;
+}
 div * {
     font-size: 30px;
     font-family: 'Courier New', Courier, monospace;
@@ -25,6 +28,9 @@ input.idBox {
 }
 input#slim {
     width: 194px;
+}
+input#animate {
+    width: 14px;
 }
 div.center {
     text-align: center;

@@ -284,6 +284,9 @@ function animate() {
     startTime = Date.now()
     directionalLight.position.set(camera.position.x, camera.position.y, camera.position.z)
     let angles = Math.sin(toradians(timeStamp / 5));
+    ////////////////////////////////// EXTERNAL
+    if (!animateCheck.checked) angles = 0;
+    //////////////////////////////////
     ambientLight.position.set(camera.position.x, camera.position.y, camera.position.z)
     for (let index = 0; index < arms.length; index++) {
         let arm = arms[index]
@@ -298,7 +301,11 @@ function animate() {
         if (index % 2 == 0) type = -1
         leg[1].rotation.set(type * toradians(20) * angles, 0, 0)
         leg[1].position.set(leg[4].x, leg[4].y + 50 - 50 * Math.cos(leg[1].rotation.x), leg[4].z + -50 * Math.sin(leg[1].rotation.x))
-    } {
+    }
+    capeAnimation: {
+        ////////////////////////////////// EXTERNAL
+        if (!animateCheck.checked) timeStamp = 0;
+        //////////////////////////////////
         let mesh = cape[1]
         let capeAngle = toradians(18) - Math.sin(toradians(timeStamp / 20)) * toradians(6)
         let a = Math.PI + capeAngle

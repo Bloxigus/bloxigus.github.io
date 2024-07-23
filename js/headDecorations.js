@@ -1,24 +1,5 @@
-/*let colours = {
-    "A": "edge",
-    "B": "edge2",
-    "C": "middle",
-    "D": "lip",
-    "E": "eye",
-    "F": "fin1",
-    "G": "fin2",
-    "H": "fin3",
-    "I": "fin4",
-    "J": "fin5",
-    " ": "transparent",
-    "X": "base"
-}*/
-/**
- * Types:
- * head
- * hat
- * legs
- */
 
+/***/
 let tomiHat = {
     head: {
         top: [

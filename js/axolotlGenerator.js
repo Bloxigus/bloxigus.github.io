@@ -37,7 +37,14 @@ class Axolotl {
     ) {
         this.canvasContext.clearRect(0, 0, 64, 64)
         if (!customSkinKeepOption.checked) this.canvasContext.drawImage((slim) ? imgSlim : img, 0, 0);
-        else this.canvasContext.drawImage(customImg, 0, 0)
+        else {
+            this.canvasContext.drawImage(customImg, 0, 0)
+            if (customImg.height == 32) {
+                let imageData = this.canvasContext.getImageData(0, 0, 64, 64);
+                fixSmallSkinFile(imageData);
+                this.canvasContext.putImageData(imageData, 0, 0);
+            }
+        }
         if (swapIfBad && (fin1[0] + fin1[1] + fin1[2]) < (fin5[0] + fin5[1] + fin5[2])) {
             [fin1, fin5] = [fin5, fin1]
         }
