@@ -849,7 +849,7 @@ let cubesSlim = {
             top: [36, 48],
             left: [32, 52],
             right: [39, 52],
-            back: [45, 52]
+            back: [42, 52]
         }
     },
     leftArm: {
