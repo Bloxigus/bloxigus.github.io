@@ -54,7 +54,7 @@ const RAW_LARGE_BOARD = [
     `__B___B__B_B__B___B__B_B__B___B__`,
     `G___B___G___G___B___G___G___B___G`,
 ]
-const zoom = 40;
+const zoom = 22.5;
 import { isValidWord, WORDS_BY_LENGTH, anyWordsStartWith, getMysteryLetterOptions ,clearCaches } from "./wordvalidator.js";
 class Box
 {
