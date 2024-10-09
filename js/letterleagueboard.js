@@ -1,3 +1,4 @@
+throw "nuh uh"
 const RAW_BOARD = [
     `___B__B_B__B___B__B_B__B___`,
     `_B___G___G___B___G___G___B_`,
@@ -723,6 +724,12 @@ export default class LetterLeagueBoard
                     }
 
                 }
+            } else if (key == "Delete") {
+                this.placedLetters[x][y] = new Cell()
+                this.placedLetters[x][y].baseMultiplier = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "Y" ? 3 : (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "B" ? 2 : 1
+                this.placedLetters[x][y].baseWordMultiplier = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "R" ? 3 : (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "G" ? 2 : 1
+                this.placedLetters[x][y].init()
+                // delete this.placedTiles[x + ":" + y]
             }
         } else if (this.highlightedBox.type == "hand")
         {
