@@ -562,10 +562,16 @@ export default class LetterLeagueBoard
             canvasContext.textBaseline = "middle"
             canvasContext.fillStyle = "#E0E0E0"
             canvasContext.fillRect(width * (0.5 * zoom) - 7 * zoom + 2 * zoom * handTile, height * zoom + Math.floor(0.5 * zoom), 2 * zoom, 2 * zoom)
-            this.canvasContext.textAlign = "center"
+            canvasContext.textAlign = "center"
             canvasContext.font = `${2 * zoom}px ${font}`
             canvasContext.fillStyle = "black"
             canvasContext.fillText(this.hand[handTile].toLowerCase(), width * (0.5 * zoom) - 7 * zoom + 2 * zoom * handTile + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
+        }
+        if (this.hand.length == 0) {
+            canvasContext.textAlign = "center"
+            canvasContext.font = `${1 * zoom}px ${font}`
+            canvasContext.fillStyle = "#A0A0A0"
+            canvasContext.fillText("Hand / Rack", width * (0.5 * zoom) - 7 * zoom + 2 * zoom * 1 + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
         }
 
         if (relativeY > height * zoom + Math.floor(0.5 * zoom) && relativeY < height * zoom + 2 * zoom + Math.ceil(0.5 * zoom))
