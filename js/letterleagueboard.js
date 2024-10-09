@@ -372,6 +372,7 @@ class CellPlacement extends Cell
         super();
         this.x = x;
         this.y = y;
+        if (letter == "*") letter = "?";
         this.letter = letter;
         this.isWild = wild;
         this.isTemp = true;
@@ -638,7 +639,11 @@ export default class LetterLeagueBoard
         let hovered = this.getHovered();
         if (hovered.x)
         {
-            this.placedTiles[hovered.x + ":" + hovered.y].isWild = !this.placedTiles[hovered.x + ":" + hovered.y].isWild;
+            if (this.placedTiles[hovered.x + ":" + hovered.y]) {
+                this.placedTiles[hovered.x + ":" + hovered.y].isWild = !this.placedTiles[hovered.x + ":" + hovered.y].isWild;
+            } else {
+                this.placedLetters[hovered.x][hovered.y].isWild = !this.placedLetters[hovered.x][hovered.y].isWild;
+            }
         }
     }
     showTempwords = false
@@ -653,11 +658,12 @@ export default class LetterLeagueBoard
             let y = this.highlightedBox.y / zoom;
             if (key.length == 1)
             {
-                
-                if (this.placedLetters[x][y].letter == "")
-                {
-                    let placement = new CellPlacement(x, y, key.toLowerCase(), false, this)
-                    this.placedTiles[x + ":" + y] = placement;
+                if ("abcdefghijklmnopqrstuvwxyz?*".includes(key)) {
+                    if (this.placedLetters[x][y].letter == "")
+                    {
+                        let placement = new CellPlacement(x, y, key.toLowerCase(), false, this)
+                        this.placedTiles[x + ":" + y] = placement;
+                    }
                 }
             } else if (key == "ArrowDown" && this.highlightedBox.y < height * zoom - zoom)
             {
@@ -710,7 +716,10 @@ export default class LetterLeagueBoard
         {
             if (key.length == 1 && this.hand.length < 7)
             {
-                this.hand.push(key.toLowerCase());
+                if ("abcdefghijklmnopqrstuvwxyz?*".includes(key)) {
+                    if (key == "*") key = "?";
+                    this.hand.push(key.toLowerCase());
+                }
             } else if (key == "Backspace")
             {
                 this.hand.length = Math.max(this.hand.length - 1, 0)
@@ -1095,14 +1104,15 @@ export default class LetterLeagueBoard
                         if (points.length == 0) return;
                         if (points.find(v => v.getPoints() == -1)) return;
 
-                        let pts = points.reduce(function (prev, current)
+                        let pts = points.reduce(function (prev, current, index)
                         {
                             let pts = current.getPoints()
                             if (pts == -1 || prev == -1) return -1;
+                            if (index == 1 && shouldDouble) pts = pts + pts;
                             return prev + pts;
                         }, 0)
                         board.topScoringPredictions.push({
-                            points: (shouldDouble?pts:0) + pts + Math.random() / 5,
+                            points: pts + Math.random() / 5,
                             word: [...onlyPlaceables],
                             wdStr: stack.map(cell => cell.letter).join("")
                         })
@@ -1121,10 +1131,11 @@ export default class LetterLeagueBoard
                     if (points.length == 0) return;
                     if (points.find(v => v.getPoints() == -1)) return;
 
-                    let pts = points.reduce(function (prev, current)
+                    let pts = points.reduce(function (prev, current, index)
                     {
                         let pts = current.getPoints()
                         if (pts == -1 || prev == -1) return -1;
+                        if (index == 1 && shouldDouble) pts = pts + pts;
                         return prev + pts;
                     }, 0)
                     board.topScoringPredictions.push({
