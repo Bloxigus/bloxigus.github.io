@@ -840,12 +840,18 @@ export default class LetterLeagueBoard
     minY = 0;
     minX = 0;
     hasCell(x, y) {
+        x = Math.round(x)
+        y = Math.round(y)
         return this.placedLetters.has(`(${x}, ${y})`)
     }
     getCell(x, y) {
+        x = Math.round(x)
+        y = Math.round(y)
         return this.placedLetters.get(`(${x}, ${y})`)
     }
     setCell(x, y, newCell) {
+        x = Math.round(x)
+        y = Math.round(y)
         this.placedLetters.set(`(${x}, ${y})`, newCell)
         if (this.maxX < x) this.maxX = x;
         if (this.minX > x) this.minX = x;
@@ -853,18 +859,28 @@ export default class LetterLeagueBoard
         if (this.minY > y) this.minY = y;
     }
     deleteCell(x, y) {
+        x = Math.round(x)
+        y = Math.round(y)
         this.placedLetters.delete(`(${x}, ${y})`)
     }
     hasTile(x, y) {
+        x = Math.round(x)
+        y = Math.round(y)
         return this.placedTiles.has(`(${x}, ${y})`)
     }
     getTile(x, y) {
+        x = Math.round(x)
+        y = Math.round(y)
         return this.placedTiles.get(`(${x}, ${y})`)
     }
     setTile(x, y, newTile) {
+        x = Math.round(x)
+        y = Math.round(y)
         this.placedTiles.set(`(${x}, ${y})`, newTile)
     }
     deleteTile(x, y) {
+        x = Math.round(x)
+        y = Math.round(y)
         this.placedTiles.delete(`(${x}, ${y})`)
     }
     /**
