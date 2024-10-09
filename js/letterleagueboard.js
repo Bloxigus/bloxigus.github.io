@@ -469,9 +469,13 @@ export default class LetterLeagueBoard
     render()
     {
         let canvasContext = this.canvasContext;
+
         let height = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length;
         let width = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0]?.length || 0;
         let rect = this.canvasContext.canvas.getBoundingClientRect();
+
+        canvasContext.clearRect(0, 0, width * zoom, height * zoom)
+
         canvasContext.canvas.width = width * zoom + 10 * zoom
         canvasContext.canvas.height = height * zoom + 3 * zoom
         for (let row in (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD))
@@ -588,11 +592,11 @@ export default class LetterLeagueBoard
         if (this.topScoringPredictions.length != 0)
         {
             let value = Math.floor(this.topScoringPredictions[this.topScoringIndex].points)
-            this.canvasContext.fillStyle = "#000000"
+            this.canvasContext.fillStyle = "#FFFFFF"
             this.canvasContext.textAlign = "left"
-            canvasContext.font = `${0.5 * zoom}px ${font}`
+            canvasContext.font = `${1 * zoom}px ${font}`
             canvasContext.textBaseline = "middle"
-            this.canvasContext.fillText(`Value: ${value}`, zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
+            this.canvasContext.fillText(`Points: ${value}`, zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
         }
         if (this.highlightedBox.type == "tilesquare") this.drawWordBoxes(this.highlightedBox.x / zoom, this.highlightedBox.y / zoom)
         for (let button of this.buttons)
@@ -709,7 +713,9 @@ export default class LetterLeagueBoard
                             tile.isTemp = false;
                             this.placedLetters[tile.x][tile.y] = tile
                         }
-                        this.pointLog.push(`${points.reduce((prev, curr) => prev + curr.getPoints(), 0)}: ${points.map(point => `${point.word.toUpperCase()}: ${point.getPoints()}`).join(", ")}`)
+                        let logEntry = `${points.reduce((prev, curr) => prev + curr.getPoints(), 0)}: ${points.map(point => `${point.word.toUpperCase()}: ${point.getPoints()}`).join(", ")}`
+                        this.pointLog.push(logEntry)
+                        console.log(logEntry)
                         this.placedTiles = {}
                         points.forEach(wpb => wpb.updateLetters())
                         this.firstMove = false
@@ -810,9 +816,10 @@ export default class LetterLeagueBoard
                 }
                 if (verticalBox.area() > 1 && draw)
                 {
+                    this.canvasContext.font = `${0.5 * zoom}px ${font}`
                     this.canvasContext.fillStyle = "#000000"
+                    this.canvasContext.textBaseline = "bottom"
                     this.canvasContext.textAlign = "left"
-                    this.canvasContext.textBaseline = "top"
                     this.canvasContext.fillText(verticalBox.getPoints(), verticalBox.x * zoom, verticalBox.y * zoom)
                     this.drawBox(verticalBox)
                 }
@@ -833,9 +840,10 @@ export default class LetterLeagueBoard
                 }
                 if (horizontalBox.area() > 1 && draw)
                 {
+                    this.canvasContext.font = `${0.5 * zoom}px ${font}`
                     this.canvasContext.fillStyle = "#000000"
+                    this.canvasContext.textAlign = "right"
                     this.canvasContext.textBaseline = "top"
-                    this.canvasContext.textAlign = "left"
                     this.canvasContext.fillText(horizontalBox.getPoints(), horizontalBox.x * zoom, horizontalBox.y * zoom)
                     this.drawBox(horizontalBox)
                 }
@@ -934,6 +942,7 @@ export default class LetterLeagueBoard
             let checkPointsForPlacement = this.checkPointsForPlacement.bind(this);
             let board = this;
             let center = this.center;
+            let alreadyChecked = new Set();
             board.progress.current = 0;
             /**
              * 
@@ -945,6 +954,8 @@ export default class LetterLeagueBoard
             function checkNext(hand, x, y, stack, legal, direction)
             {
                 if (board.progress.shouldStop) return;
+                if (alreadyChecked.has(`${x}:${y}:${stack.map(a=>a.letter).join("")}`)) return;
+                alreadyChecked.add(`${x}:${y}:${stack.map(a=>a.letter).join("")}`)
                 board.progress.current++;
                 if (hand != "")
                 {
@@ -974,13 +985,18 @@ export default class LetterLeagueBoard
                         return -1
                     }).filter(a => a >= 0)
                     let options = getMysteryLetterOptions(word)
+                    let oldParts = []
+                    for (let wildPlace of wildPlaces)
+                        {
+                            oldParts[wildPlace] = stack[wildPlace]
+                        }
                     for (let option of options)
                     {
                         for (let optionPart in option)
-                        {
-                            stack[wildPlaces[optionPart]].letter = option[optionPart]
-                            stack[wildPlaces[optionPart]].isWild = true
-                        }
+                            {
+                                let oldPart = oldParts[wildPlaces[optionPart]]
+                                stack[wildPlaces[optionPart]] = new CellPlacement(oldPart.x, oldPart.y, option[optionPart], true, board)
+                            }
                         let points = checkPointsForPlacement(stack)
                         if (points.length == 0) return;
                         let pts = points[0].getPoints();
@@ -994,9 +1010,9 @@ export default class LetterLeagueBoard
                         }
                     }
                     for (let wildPlace of wildPlaces)
-                    {
-                        stack[wildPlace].letter = "?"
-                    }
+                        {
+                            stack[wildPlace] = oldParts[wildPlace]
+                        }
                 } else
                 {
                     let points = checkPointsForPlacement(stack)
@@ -1032,6 +1048,7 @@ export default class LetterLeagueBoard
             let checkPointsForPlacement = this.checkPointsForPlacement.bind(this);
             let board = this;
             let startingHand = this.hand.join("")
+            let alreadyChecked = new Set();
             board.progress.current = 0;
             /**
              * 
@@ -1043,6 +1060,8 @@ export default class LetterLeagueBoard
              */
             function checkNext(hand, x, y, stack, legal, direction)
             {
+                if (alreadyChecked.has(`${x}:${y}:${stack.map(a=>a.letter).join("")}`)) return;
+                alreadyChecked.add(`${x}:${y}:${stack.map(a=>a.letter).join("")}`)
                 if (board.progress.shouldStop) return;
                 board.progress.current++;
                 let hasBefore = x - direction.x > 0 && y - direction.y > 0

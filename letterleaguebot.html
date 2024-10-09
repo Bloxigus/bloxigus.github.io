@@ -1,30 +1,52 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="https://use.typekit.net/eyu7pcr.css">
-        <style>
-            body {
-                font-family: "museo-sans"
-            }
-        </style>
-        <script type="module" src="./js/letterleague.js"></script>
-        <title>LetterLeagueBot</title>
-    </head>
-    <body>
+
+<head>
+    <link rel="stylesheet" href="https://use.typekit.net/eyu7pcr.css">
+    <style>
+        body {
+            font-family: "museo-sans"
+        }
+
+        .dark {
+            filter: brightness(0.5);
+            background-color: black;
+            color: white;
+        }
+        .flex {
+            display: flex;
+        }
+    </style>
+    <script type="module" src="./js/letterleague.js"></script>
+    <title>LetterLeagueBot</title>
+</head>
+<body class="dark">
+    <div class="flex">
         <canvas data-display="renderer">
 
         </canvas>
-        <h1>Things to note: </h1>
-        <p>
-            LetterLeagueBot does not know every word used by letter league. If a word comes up as invalid in the actual game, 
-            press the "Next Best Option" until a word does work
-        </p>
-        <p>
-            Press enter on a inserted word while hovering the grid to submit that word into the grid. Any words that have no 
-            point value assigned are not in the grid yet.
-        </p>
-        <p>
-            Wildcards (?) significantly increase the runtime of the program
-        </p>
-    </body>
+        <div>
+            <h1>Things to note: </h1>
+            <ul>
+                <li>
+                    LetterLeagueBot does not know every word used by letter league. If a word comes up as invalid in the
+                    actual game,
+                    press the "Next Best Option" until a word does work
+                </li>
+                <br>
+                <li>
+                    Press enter on a inserted word while hovering the grid to submit that word into the grid. Any words that
+                    have no
+                    point value assigned are not in the grid yet.
+                </li>
+                <br>
+                <li>
+                    Wildcards (?) significantly increase the runtime of the program
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+</body>
+
 </html>
