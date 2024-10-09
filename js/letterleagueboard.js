@@ -1141,8 +1141,8 @@ export default class LetterLeagueBoard
                             word: [...onlyPlaceables],
                             wdStr: stack.map(cell => cell.letter).join("")
                         })
-                        if (board.progress.best < (shouldDouble?pts:0) + pts) {
-                            board.progress.best = (shouldDouble?pts:0) + pts
+                        if (board.progress.best < pts) {
+                            board.progress.best = pts
                         }
                     }
                     for (let wildPlace of wildPlaces)
@@ -1164,12 +1164,12 @@ export default class LetterLeagueBoard
                         return prev + pts;
                     }, 0)
                     board.topScoringPredictions.push({
-                        points: (shouldDouble?pts:0) + pts + Math.random() / 5,
+                        points: pts + Math.random() / 5,
                         word: [...onlyPlaceables],
                         wdStr: word
                     })
-                    if (board.progress.best < (shouldDouble?pts:0) + pts) {
-                        board.progress.best = (shouldDouble?pts:0) + pts
+                    if (board.progress.best < pts) {
+                        board.progress.best = pts
                     }
                 }
 
