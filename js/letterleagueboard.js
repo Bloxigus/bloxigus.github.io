@@ -1,62 +1,57 @@
-throw "nuh uh"
-const RAW_BOARD = [
-    `___B__B_B__B___B__B_B__B___`,
-    `_B___G___G___B___G___G___B_`,
-    `____B_Y_Y_B_____B_Y_Y_B____`,
-    `BGB____R____BGB____R____BGB`,
-    `____B_Y_Y_B_____B_Y_Y_B____`,
-    `_B___G___G___B___G___G___B_`,
-    `___B__B_B__B___B__B_B__B___`,
-    `____G_____G_____G_____G____`,
-    `Y_Y____B____Y_Y____B____Y_Y`,
-    `___G___G___G_S_G___G___G___`,// middle
-    `Y_Y____B____Y_Y____B____Y_Y`,
-    `____G_____G_____G_____G____`,
-    `___B__B_B__B___B__B_B__B___`,
-    `_B___G___G___B___G___G___B_`,
-    `____B_Y_Y_B_____B_Y_Y_B____`,
-    `BGB____R____BGB____R____BGB`,
-    `____B_Y_Y_B_____B_Y_Y_B____`,
-    `_B___G___G___B___G___G___B_`,
-    `___B__B_B__B___B__B_B__B___`,
+const BOARD_SEGMENT = [
+    `__G___G___G_`,
+    `_Y____B____Y`,
+    `___G_____G__`,
+    `__B__B_B__B_`,
+    `B___G___G___`,
+    `___B_Y_Y_B__`,
+    `GB____R____B`,
+    `___B_Y_Y_B__`,
+    `B___G___G___`,
+    `__B__B_B__B_`,
+    `___G_____G__`,
+    `_Y____B____Y`
 ]
-const RAW_LARGE_BOARD = [
-    `G___B___G___G___B___G___G___B___G`,
-    `__B___B__B_B__B___B__B_B__B___B__`,
-    `_G_____G_____G_____G_____G_____G_`,
-    `___Y_Y____B____Y_Y____B____Y_Y___`,
-    `__G___G___G___G___G___G___G___G__`,
-    `___Y_Y____B____Y_Y____B____Y_Y___`,
-    `_G_____G_____G_____G_____G_____G_`,
-    `__B___B__B_B__B___B__B_B__B___B__`,
-    `G___B___G___G___B___G___G___B___G`,
-    `_B_____B_Y_Y_B_____B_Y_Y_B_____B_`,
-    `___BGB____R____BGB____R____BGB___`,
-    `_B_____B_Y_Y_B_____B_Y_Y_B_____B_`,
-    `G___B___G___G___B___G___G___B___G`,
-    `__B___B__B_B__B___B__B_B__B___B__`,
-    `_G_____G_____G_____G_____G_____G_`,
-    `___Y_Y____B____Y_Y____B____Y_Y___`,
-    `__G___G___G___G_S_G___G___G___G__`,// middle
-    `___Y_Y____B____Y_Y____B____Y_Y___`,
-    `_G_____G_____G_____G_____G_____G_`,
-    `__B___B__B_B__B___B__B_B__B___B__`,
-    `G___B___G___G___B___G___G___B___G`,
-    `_B_____B_Y_Y_B_____B_Y_Y_B_____B_`,
-    `___BGB____R____BGB____R____BGB___`,
-    `_B_____B_Y_Y_B_____B_Y_Y_B_____B_`,
-    `G___B___G___G___B___G___G___B___G`,
-    `__B___B__B_B__B___B__B_B__B___B__`,
-    `_G_____G_____G_____G_____G_____G_`,
-    `___Y_Y____B____Y_Y____B____Y_Y___`,
-    `__G___G___G___G___G___G___G___G__`,
-    `___Y_Y____B____Y_Y____B____Y_Y___`,
-    `_G_____G_____G_____G_____G_____G_`,
-    `__B___B__B_B__B___B__B_B__B___B__`,
-    `G___B___G___G___B___G___G___B___G`,
+let START_BOARD = [
+    `S`
 ]
-const zoom = 22.5;
-import { isValidWord, WORDS_BY_LENGTH, anyWordsStartWith, getMysteryLetterOptions ,clearCaches } from "./wordvalidator.js";
+function getBoardAtPoint(x, y) {
+    if (x == 0 && y == 0) return START_BOARD[x][y]
+    return BOARD_SEGMENT[((y % 12) + 12) % 12][((x % 12) + 12) % 12]
+}
+function getBonusAtPoint(x, y) {
+    let letter = getBoardAtPoint(x, y)
+    if (letter == "R") {
+        return ({
+            letterMultiplier: 1,
+            wordMultiplier: 3
+        })
+    }
+    if (letter == "Y") {
+        return ({
+            letterMultiplier: 3,
+            wordMultiplier: 1
+        })
+    }
+    if (letter == "B") {
+        return ({
+            letterMultiplier: 2,
+            wordMultiplier: 1
+        })
+    }
+    if (letter == "G") {
+        return ({
+            letterMultiplier: 1,
+            wordMultiplier: 2
+        })
+    }
+    return ({
+        letterMultiplier: 1,
+        wordMultiplier: 1
+    })
+}
+const zoom = 40;
+import { isValidWord, anyWordsStartWith, getMysteryLetterOptions, clearCaches } from "./wordvalidator.js";
 class Box
 {
     startX = 0;
@@ -196,9 +191,6 @@ class WordPointBox extends Box
     getPoints()
     {
         if (isValidWord(this.word)) return this.points * this.multipliers;
-        // this.containingLetters.reduce((prev, letter) => {
-        //     return prev + letter.value
-        // }, 0)
         return -1
     }
     containingLetters = []
@@ -221,7 +213,6 @@ class WordPointBox extends Box
             let points = letterMultiplier * (letter.isWild ? 0 : POINT_VALS[letter.letter] || 0)
             this.multipliers *= wordMultiplier;
             this.containingLetters.push(letter)
-            // console.log(wordMultiplier, letterMultiplier, points)
             this.points += points;
         }
     }
@@ -273,44 +264,35 @@ class WordPointBox extends Box
         this.points = this.initialPoints;
         this.multipliers = this.initialMultiplier;
     }
-}
-class WordFillBox extends Box
-{
-    words = []
-    constructor(x, y, width, height,)
-    {
-        super(x, y, width, height)
+    /**
+     * 
+     * @param {LetterLeagueBoard} board 
+     */
+    center(board) {
+        board.offsetX = this.x + (this.width * zoom / 2)
+        board.offsetY = this.y + (this.height * zoom / 2)
     }
-    init(letters, hand)
-    {
-        this.hand = makeHand(hand);
-        if (this.width == 1 || this.height == 1)
-        {
-            // console.log(this.hand)
-            this.words = WORDS_BY_LENGTH[this.width * this.height] || []
-            this.words = this.words.filter(possibleWord =>
-            {
-                let tempHand = { ...this.hand }
-                for (let letterIndex in possibleWord)
-                {
-                    if (letters[letterIndex] != "?" && letters[letterIndex] == possibleWord[letterIndex]) continue;
-                    if (letters[letterIndex] == "?" && tempHand[possibleWord[letterIndex]] > 0)
-                    {
-                        tempHand[possibleWord[letterIndex]] -= 1;
-                        continue
-                    } else if (letters[letterIndex] == "?" && tempHand["?"] > 0)
-                    {
-                        tempHand["?"] -= 1;
-                        continue;
-                    }
-                    return false;
-                }
-                return true;
-            })
-        }
+    /**
+     * 
+     * @param {LetterLeagueBoard} board 
+     * @param {CellPlacement[]} letters 
+     */
+    static center(board, letters) {
+        let {xTotal, yTotal} = letters.reduce((prev, current) => {
+            return {
+                xTotal: prev.xTotal + current.x,
+                yTotal: prev.yTotal + current.y
+            }
+        }, {xTotal: 0, yTotal: 0})
+        board.offsetX = (xTotal * zoom) / letters.length
+        board.offsetY = (yTotal * zoom) / letters.length
     }
 }
-
+/**
+ * TODO: Use this function to reduce duplicate tests
+ * @param {string[]} handArray 
+ * @returns 
+ */
 function makeHand(handArray)
 {
     let hand = {};
@@ -320,7 +302,6 @@ function makeHand(handArray)
     }
     return hand;
 }
-window.WordFillBox = WordFillBox
 class Cell
 {
     static equals(x, y) {
@@ -377,8 +358,9 @@ class CellPlacement extends Cell
         this.letter = letter;
         this.isWild = wild;
         this.isTemp = true;
-        this.baseMultiplier = board.placedLetters[x][y].baseMultiplier;
-        this.baseWordMultiplier = board.placedLetters[x][y].baseWordMultiplier;
+        let bonus = getBonusAtPoint(x, y)
+        this.baseMultiplier = bonus.letterMultiplier;
+        this.baseWordMultiplier = bonus.wordMultiplier;
         this.init()
     }
     setReplacement(oldCell)
@@ -411,11 +393,18 @@ function pointInRect(x, y, x1, y1, x2, y2)
 }
 export default class LetterLeagueBoard
 {
+    /** @type {Map<string, Cell>} */
     placedLetters;
     mouseX = -1
     mouseY = -1
     bigBoard = false
     center = { x: 0, y: 0 }
+    width = 1;
+    height = 1;
+    originX = 0
+    originY = 0
+    offsetX = 15
+    offsetY = 15
     /**
      * 
      * @param {CanvasRenderingContext2D} canvasContext 
@@ -423,23 +412,21 @@ export default class LetterLeagueBoard
     init(canvasContext, bigBoard = false)
     {
         this.bigBoard = bigBoard
-        this.placedLetters = new Array((this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0].length).fill().map(() => new Array((this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length || 0).fill().map(() => new Cell()))
-        for (let x in this.placedLetters)
-        {
-            for (let y in this.placedLetters[x])
-            {
-                this.placedLetters[x][y].baseMultiplier = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "Y" ? 3 : (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "B" ? 2 : 1
-                this.placedLetters[x][y].baseWordMultiplier = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "R" ? 3 : (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "G" ? 2 : 1
-                if ((this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "S")
-                {
-                    this.center = { x: x * 1, y: y * 1 }
-                }
-            }
-        }
-        let width = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0]?.length || 0;
+        this.placedLetters = new Map()
+        this.originX = -16
+        this.originY = -16
+        // for (let x = -16; x <= 16; x++) {
+        //     for (let y = -16; y <= 16; y++) {
+        //         this.setCell(x, y, new Cell())
+        //     }
+        // }
+        this.width = 23
+        this.height = 17
+        this.offsetX = Math.floor(this.width / 2);
+        this.offsetY = Math.floor(this.height / 2);
         this.canvasContext = canvasContext;
         this.buttons.push(new Button(
-            width * zoom + zoom / 2,
+            this.width * zoom + zoom / 2,
             zoom / 2,
             9 * zoom,
             zoom,
@@ -447,7 +434,7 @@ export default class LetterLeagueBoard
             this.toggleWild.bind(this)
         ))
         this.buttons.push(new Button(
-            width * zoom + zoom / 2,
+            this.width * zoom + zoom / 2,
             zoom / 2 + zoom * 2,
             9 * zoom,
             zoom,
@@ -455,7 +442,7 @@ export default class LetterLeagueBoard
             this.placeNextTopScore.bind(this)
         ))
         this.buttons.push(new Button(
-            width * zoom + zoom / 2,
+            this.width * zoom + zoom / 2,
             zoom / 2 + zoom * 4,
             9 * zoom,
             zoom,
@@ -465,25 +452,44 @@ export default class LetterLeagueBoard
                 window.board.init(canvasContext, bigBoard)
             }
         ))
+        this.buttons.push(new Button(
+            this.width * zoom + zoom / 2,
+            zoom / 2 + zoom * 6,
+            9 * zoom,
+            zoom,
+            "Center Board",
+            () => {
+                this.offsetX = Math.floor(this.width / 2);
+                this.offsetY = Math.floor(this.height / 2);
+            }
+        ))
     }
     pointLog = []
     render()
     {
+        if (this.isClicking && (this.clickStartTime + 150 < Date.now() || (this.mouseX - this.clickStartPos.x)**2+(this.mouseY-this.clickStartPos.x)**2>100 )) {
+            this.offsetX = (this.mouseX - this.clickStartPos.x) / zoom + this.clickStartPos.offsetX; 
+            this.offsetY = (this.mouseY - this.clickStartPos.y) / zoom + this.clickStartPos.offsetY;
+        }
+
+
         let canvasContext = this.canvasContext;
 
-        let height = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length;
-        let width = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0]?.length || 0;
+        let height = this.height;
+        let width = this.width || 0;
         let rect = this.canvasContext.canvas.getBoundingClientRect();
 
         canvasContext.clearRect(0, 0, width * zoom, height * zoom)
 
         canvasContext.canvas.width = width * zoom + 10 * zoom
         canvasContext.canvas.height = height * zoom + 3 * zoom
-        for (let row in (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD))
+        let topLeftX = Math.floor(-this.offsetX)
+        let topLeftY = Math.floor(-this.offsetY)
+        for (let row = topLeftY; row < topLeftY + this.height + 1; row ++)
         {
-            for (let column in (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[row])
+            for (let column = topLeftX; column < topLeftX + this.width + 1; column ++)
             {
-                let background = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[row][column]
+                let background = getBoardAtPoint(column, row)
                 switch (background)
                 {
                     case "Y":
@@ -504,91 +510,96 @@ export default class LetterLeagueBoard
                     default:
                         canvasContext.fillStyle = "#ffe5c6"
                 }
-                canvasContext.fillRect(column * zoom, row * zoom, zoom, zoom)
+                canvasContext.fillRect((this.offsetX + column) * zoom, (this.offsetY + row) * zoom, zoom, zoom)
                 canvasContext.strokeStyle = "#fff6e1"
-                canvasContext.strokeRect(column * zoom, row * zoom, zoom, zoom)
+                canvasContext.strokeRect((this.offsetX + column) * zoom, (this.offsetY + row) * zoom, zoom, zoom)
             }
         }
+        
         canvasContext.strokeStyle = "#7F7F7F"
         let relativeX = (this.mouseX - rect.left);
         let relativeY = (this.mouseY - rect.top);
-        let insideX = Math.floor((this.mouseX - rect.left) / zoom) * zoom;
-        let insideY = Math.floor((this.mouseY - rect.top) / zoom) * zoom;
-        if (insideX > width * zoom - zoom || insideX < 0 || insideY > height * zoom - zoom || insideY < 0)
+        let insideX = Math.floor((this.mouseX - rect.left - this.offsetX * zoom) / zoom) * zoom + this.offsetX * zoom;
+        let insideY = Math.floor((this.mouseY - rect.top - this.offsetY * zoom) / zoom) * zoom + this.offsetY * zoom;
+        if (insideX > width * zoom || insideX < 0 || insideY > height * zoom || insideY < 0)
         {
             this.hoveredBox = { type: "none" };
         } else
         {
             canvasContext.strokeRect(insideX, insideY, zoom, zoom)
-            this.hoveredBox = { x: insideX, y: insideY, type: "tilesquare" }
+            this.hoveredBox = { x: insideX - this.offsetX * zoom, y: insideY - this.offsetY * zoom, type: "tilesquare" }
         }
         if (this.highlightedBox.type == "tilesquare")
         {
             canvasContext.strokeStyle = "#000000"
-            canvasContext.strokeRect(this.highlightedBox.x, this.highlightedBox.y, zoom, zoom)
+            canvasContext.strokeRect(this.highlightedBox.x + this.offsetX * zoom, this.highlightedBox.y + this.offsetY * zoom, zoom, zoom)
         }
         canvasContext.fillStyle = "#000000"
         canvasContext.font = `${zoom}px ${font}`
         canvasContext.textAlign = "center"
         canvasContext.textBaseline = "middle"
-        for (let x in this.placedLetters)
-        {
-            for (let y in this.placedLetters[x])
+        for (let y = topLeftY; y < topLeftY + this.height + 1; y ++)
             {
-                canvasContext.fillStyle = "#000000"
-                if (this.placedTiles[x + ":" + y] && this.placedTiles[x + ":" + y].isWild) canvasContext.fillStyle = "#0000FF"
-                else if (this.placedLetters[x][y].isWild) canvasContext.fillStyle = "#0000FF"
+                for (let x = topLeftX; x < topLeftX + this.width + 1; x ++)
+                {
+                    if (!this.hasCell(x, y) && !this.hasTile(x, y)) continue;
+                    // if (this.hasTile(x, y)) console.log(this.getTile(x, y))
+                    canvasContext.fillStyle = "#000000"
+                if (this.hasTile(x, y) && this.getTile(x, y).isWild) canvasContext.fillStyle = "#0000FF"
+                else if (this.hasCell(x, y) && this.getCell(x, y).isWild) canvasContext.fillStyle = "#0000FF"
 
                 canvasContext.font = `${0.875 * zoom}px ${font}`
                 canvasContext.textAlign = "center"
                 canvasContext.textBaseline = "middle"
-                if (!this.placedTiles[x + ":" + y]) canvasContext.fillText(this.placedLetters[x][y].letter.toLowerCase(), x * zoom + (0.5 * zoom), y * zoom + (0.5 * zoom))
-                else canvasContext.fillText(this.placedTiles[x + ":" + y].letter.toLowerCase(), x * zoom + (0.5 * zoom), y * zoom + (0.5 * zoom))
-                if (this.placedTiles[x + ":" + y] && this.showTempwords) {
+                if (this.hasCell(x, y)) canvasContext.fillText(this.getCell(x, y).letter.toLowerCase(), (this.offsetX + x) * zoom + (0.5 * zoom), (this.offsetY + y) * zoom + (0.5 * zoom))
+                else canvasContext.fillText(this.getTile(x, y).letter.toLowerCase(), (this.offsetX + x) * zoom + (0.5 * zoom), (this.offsetY + y) * zoom + (0.5 * zoom))
+                if (this.hasTile(x, y) && this.showTempwords) {
                     canvasContext.strokeStyle = "#FF0000"
-                    canvasContext.strokeRect(x * zoom, y * zoom, zoom, zoom)
+                    canvasContext.strokeRect((this.offsetX + x) * zoom, (this.offsetY + y) * zoom, zoom, zoom)
                 }
                 canvasContext.fillStyle = "#1F1F1F"
 
                 canvasContext.font = `${0.5 * zoom}px ${font}`
                 canvasContext.textAlign = "right"
                 canvasContext.textBaseline = "top"
-                if (this.placedLetters[x][y].value != -1 && this.placedLetters[x][y].letter != "")
+                if (this.hasCell(x, y) && this.getCell(x, y).value > 0)
                 {
-                    canvasContext.fillText((this.placedLetters[x][y].value), x * zoom + (zoom), y * zoom)
+                    canvasContext.fillText((this.getCell(x, y).value), (this.offsetX + x) * zoom + (zoom), (this.offsetY + y) * zoom)
                 }
-
+                }
             }
-        }
+            canvasContext.fillStyle = "#000000"
+            canvasContext.fillRect(this.width * zoom, 0, 2 * zoom, this.height * zoom + 2 * zoom)
+            canvasContext.fillRect(0, this.height * zoom, this.width * zoom + 2 * zoom, 2 * zoom)
         canvasContext.fillStyle = "#F0F0F0"
-        canvasContext.fillRect(width * (0.5 * zoom) - 7 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
+        canvasContext.fillRect(width * (0.5 * zoom) - 5 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
         for (let handTile in this.hand)
         {
             canvasContext.textBaseline = "middle"
             canvasContext.fillStyle = "#E0E0E0"
-            canvasContext.fillRect(width * (0.5 * zoom) - 7 * zoom + 2 * zoom * handTile, height * zoom + Math.floor(0.5 * zoom), 2 * zoom, 2 * zoom)
+            canvasContext.fillRect(width * (0.5 * zoom) - 5 * zoom + 2 * zoom * handTile, height * zoom + Math.floor(0.5 * zoom), 2 * zoom, 2 * zoom)
             canvasContext.textAlign = "center"
             canvasContext.font = `${2 * zoom}px ${font}`
             canvasContext.fillStyle = "black"
-            canvasContext.fillText(this.hand[handTile].toLowerCase(), width * (0.5 * zoom) - 7 * zoom + 2 * zoom * handTile + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
+            canvasContext.fillText(this.hand[handTile].toLowerCase(), width * (0.5 * zoom) - 5 * zoom + 2 * zoom * handTile + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
         }
         if (this.hand.length == 0) {
             canvasContext.textAlign = "center"
             canvasContext.font = `${1 * zoom}px ${font}`
             canvasContext.fillStyle = "#A0A0A0"
-            canvasContext.fillText("Hand / Rack", width * (0.5 * zoom) - 7 * zoom + 2 * zoom * 1 + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
+            canvasContext.fillText("Hand / Rack", width * (0.5 * zoom) - 5 * zoom + 2 * zoom * 1 + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
         }
 
         if (relativeY > height * zoom + Math.floor(0.5 * zoom) && relativeY < height * zoom + 2 * zoom + Math.ceil(0.5 * zoom))
         {
             canvasContext.strokeStyle = "#7F7F7F"
-            canvasContext.strokeRect(width * (0.5 * zoom) - 7 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
+            canvasContext.strokeRect(width * (0.5 * zoom) - 5 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
             this.hoveredBox = { type: "hand" }
         }
         if (this.highlightedBox.type == "hand")
         {
-            canvasContext.strokeStyle = "#000000"
-            canvasContext.strokeRect(width * (0.5 * zoom) - 7 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
+            canvasContext.strokeStyle = "#8F8F8F"
+            canvasContext.strokeRect(width * (0.5 * zoom) - 5 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
         }
         if (this.topScoringPredictions.length != 0)
         {
@@ -597,7 +608,7 @@ export default class LetterLeagueBoard
             this.canvasContext.textAlign = "left"
             canvasContext.font = `${1 * zoom}px ${font}`
             canvasContext.textBaseline = "middle"
-            this.canvasContext.fillText(`Points: ${value}`, zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
+            this.canvasContext.fillText(`Pts: ${value}`, zoom / 2, height * zoom + Math.floor(0.5 * zoom) + zoom)
         }
         if (this.highlightedBox.type == "tilesquare") this.drawWordBoxes(this.highlightedBox.x / zoom, this.highlightedBox.y / zoom)
         for (let button of this.buttons)
@@ -618,14 +629,15 @@ export default class LetterLeagueBoard
     }
     hand = [];
     buttons = [];
-    placedTiles = {};
+    /** @type {Map<string, CellPlacement>} */
+    placedTiles = new Map();
     highlightedBox = { type: "none" };
     hoveredBox = { type: "none" };
     onClick()
     {
         let canvasContext = this.canvasContext;
-        let height = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length;
-        let width = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0]?.length || 0;
+        let height = this.height;
+        let width = this.width || 0;
         let rect = canvasContext.canvas.getBoundingClientRect();
         let insideX = (this.mouseX - rect.left);
         let insideY = (this.mouseY - rect.top);
@@ -639,29 +651,52 @@ export default class LetterLeagueBoard
         if (insideX < width * zoom || insideX > 0 || insideY < height * zoom || insideY > 0)
         {
             this.highlightedBox = this.hoveredBox;
+
         } else
         {
 
             this.highlightedBox = { type: "none" }
         }
+        this.isClicking = true;
+        this.clickStartTime = Date.now()
+        this.clickStartPos = {
+            x: this.mouseX,
+            y: this.mouseY,
+            offsetX: this.offsetX,
+            offsetY: this.offsetY
+        }
     }
+    clickStartPos = {
+        x: 0,
+        y: 0,
+        offsetX: 0,
+        offsetY: 0
+    }
+    isClicking = false
+    clickStartTime = 0
+    onClickUp() {
+        this.isClicking = false;
+    }
+    /**
+     * Toggle whether the hovered space is a wildcard
+     */
     toggleWild()
     {
         let hovered = this.getHovered();
         if (hovered.x)
         {
-            if (this.placedTiles[hovered.x + ":" + hovered.y]) {
-                this.placedTiles[hovered.x + ":" + hovered.y].isWild = !this.placedTiles[hovered.x + ":" + hovered.y].isWild;
-            } else {
-                this.placedLetters[hovered.x][hovered.y].isWild = !this.placedLetters[hovered.x][hovered.y].isWild;
+            if (this.hasTile(hovered.x, hovered.y)) {
+                this.getTile(hovered.x, hovered.y).isWild = !this.getTile(hovered.x, hovered.y).isWild;
+            } else if (this.hasCell(hovered.x, hovered.y)) {
+                this.getCell(hovered.x, hovered.y).isWild = !this.getCell(hovered.x, hovered.y).isWild;
             }
         }
     }
     showTempwords = false
     onKeyboard(key)
     {
-        let height = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length;
-        let width = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0]?.length || 0;
+        let height = this.height;
+        let width = this.width || 0;
         if (this.highlightedBox.type == "tilesquare")
         {
             this.showTempwords = false
@@ -670,54 +705,56 @@ export default class LetterLeagueBoard
             if (key.length == 1)
             {
                 if ("abcdefghijklmnopqrstuvwxyz?*".includes(key)) {
-                    if (this.placedLetters[x][y].letter == "")
+                    if (!this.hasCell(x, y))
                     {
                         let placement = new CellPlacement(x, y, key.toLowerCase(), false, this)
-                        this.placedTiles[x + ":" + y] = placement;
+                        this.setTile(x, y, placement);
                     }
                 }
-            } else if (key == "ArrowDown" && this.highlightedBox.y < height * zoom - zoom)
+            } else if (key == "ArrowDown")
             {
                 this.highlightedBox.y += zoom
-            } else if (key == "ArrowUp" && this.highlightedBox.y >= zoom)
+            } else if (key == "ArrowUp")
             {
                 this.highlightedBox.y -= zoom
-            } else if (key == "ArrowRight" && this.highlightedBox.x < width * zoom - zoom)
+            } else if (key == "ArrowRight")
             {
                 this.highlightedBox.x += zoom
-            } else if (key == "ArrowLeft" && this.highlightedBox.x >= zoom)
+            } else if (key == "ArrowLeft")
             {
                 this.highlightedBox.x -= zoom
             } else if (key == "Backspace")
             {
-                delete this.placedTiles[x + ":" + y]
+                this.deleteTile(x, y)
             } else if (key == "Enter")
             {
-                if (Object.keys(this.placedTiles).length != 0)
+                debugger
+                if (this.placedTiles.size != 0)
                 {
+                    // console.log(this.placedTiles)
+                    // debugger;
                     let wordBox = new WordPointBox(0, 0, 0, 0, "#", "#")
-                    let points = this.checkPointsForPlacement(Object.values(this.placedTiles))
+                    let points = this.checkPointsForPlacement([...this.placedTiles.values()])
                     if (points == -1)
                     {
-                        this.placedTiles = {}
+                        this.placedTiles.clear()
                         return;
                     }
 
                     if (points.find(value => !isValidWord(value.word)))
                     {
-                        this.placedTiles = {}
+                        this.placedTiles.clear()
                     } else
                     {
-                        for (let tile of Object.values(this.placedTiles))
-                        {
+                        this.placedTiles.forEach( tile => {
                             wordBox.addLetter(tile)
                             tile.isTemp = false;
-                            this.placedLetters[tile.x][tile.y] = tile
-                        }
+                            this.setCell(tile.x, tile.y, tile);
+                        })
                         let logEntry = `${points.reduce((prev, curr) => prev + curr.getPoints(), 0)}: ${points.map(point => `${point.word.toUpperCase()}: ${point.getPoints()}`).join(", ")}`
                         this.pointLog.push(logEntry)
                         console.log(logEntry)
-                        this.placedTiles = {}
+                        this.placedTiles.clear()
                         points.forEach(wpb => wpb.updateLetters())
                         this.firstMove = false
                         this.topScoringPredictions = []
@@ -725,10 +762,7 @@ export default class LetterLeagueBoard
 
                 }
             } else if (key == "Delete") {
-                this.placedLetters[x][y] = new Cell()
-                this.placedLetters[x][y].baseMultiplier = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "Y" ? 3 : (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "B" ? 2 : 1
-                this.placedLetters[x][y].baseWordMultiplier = (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "R" ? 3 : (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[y][x] == "G" ? 2 : 1
-                this.placedLetters[x][y].init()
+                this.deleteCell(x, y)
                 // delete this.placedTiles[x + ":" + y]
             }
         } else if (this.highlightedBox.type == "hand")
@@ -756,13 +790,13 @@ export default class LetterLeagueBoard
                         let points = this.checkPointsForPlacement(Object.values(this.placedTiles))
                         if (points == -1)
                         {
-                            this.placedTiles = {}
+                            this.placedTiles.clear()
                             return;
                         }
     
                         if (points.find(value => !isValidWord(value.word)))
                         {
-                            this.placedTiles = {}
+                            this.placedTiles.clear()
                         } else
                         {
                             for (let tile of Object.values(this.placedTiles))
@@ -772,7 +806,7 @@ export default class LetterLeagueBoard
                                 this.placedLetters[tile.x][tile.y] = tile
                             }
                             this.pointLog.push(`${points.reduce((prev, curr) => prev + curr.getPoints(), 0)}: ${points.map(point => `${point.word.toUpperCase()}: ${point.getPoints()}`).join(", ")}`)
-                            this.placedTiles = {}
+                            this.placedTiles.clear()
                             points.forEach(wpb => wpb.updateLetters())
                             this.firstMove = false
                             this.topScoringPredictions = []
@@ -783,6 +817,8 @@ export default class LetterLeagueBoard
         }
     }
     /**
+     * Draw a box on the screen
+     * The screen gets rerenderered often
      * @param {Box} box 
      */
     drawBox(box)
@@ -792,33 +828,75 @@ export default class LetterLeagueBoard
         canvasContext.strokeStyle = box.stroke
         if (box.fill)
         {
-            canvasContext.fillRect(box.x * zoom, box.y * zoom, box.width * zoom, box.height * zoom)
+            canvasContext.fillRect((this.offsetX + box.x) * zoom, (this.offsetY + box.y) * zoom, box.width * zoom, box.height * zoom)
         }
         if (box.stroke)
         {
-            canvasContext.strokeRect(box.x * zoom, box.y * zoom, box.width * zoom, box.height * zoom)
+            canvasContext.strokeRect((this.offsetX + box.x) * zoom, (this.offsetY + box.y) * zoom, box.width * zoom, box.height * zoom)
         }
     }
+    maxX = 0;
+    maxY = 0;
+    minY = 0;
+    minX = 0;
+    hasCell(x, y) {
+        return this.placedLetters.has(`(${x}, ${y})`)
+    }
+    getCell(x, y) {
+        return this.placedLetters.get(`(${x}, ${y})`)
+    }
+    setCell(x, y, newCell) {
+        this.placedLetters.set(`(${x}, ${y})`, newCell)
+        if (this.maxX < x) this.maxX = x;
+        if (this.minX > x) this.minX = x;
+        if (this.maxY < y) this.maxY = y;
+        if (this.minY > y) this.minY = y;
+    }
+    deleteCell(x, y) {
+        this.placedLetters.delete(`(${x}, ${y})`)
+    }
+    hasTile(x, y) {
+        return this.placedTiles.has(`(${x}, ${y})`)
+    }
+    getTile(x, y) {
+        return this.placedTiles.get(`(${x}, ${y})`)
+    }
+    setTile(x, y, newTile) {
+        this.placedTiles.set(`(${x}, ${y})`, newTile)
+    }
+    deleteTile(x, y) {
+        this.placedTiles.delete(`(${x}, ${y})`)
+    }
+    /**
+     * 
+     * @param {number} startX the x value to start the search
+     * @param {number} startY the x value to start the search
+     * @param {boolean} draw whether to draw the boxes or just get the points 
+     * @param {boolean} doX whether the calculation occurs in the x axis
+     * @param {boolean} doY whether the calculation occurs in the y axis
+     * @returns 
+     */
     drawWordBoxes(startX, startY, draw = true, doX = true, doY = true)
     {
+        debugger;
         this.canvasContext.font = `${0.25 * zoom}px ${font}`
-        if (this.placedLetters[startX][startY].letter == "") return {};
-        let verticalBox = new WordPointBox(startX, startY, 1, 1, this.placedLetters[startX][startY], (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[startY][startX]);
-        let horizontalBox = new WordPointBox(startX, startY, 1, 1, this.placedLetters[startX][startY], (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[startY][startX]);
-        if (this.placedLetters[startX][startY].letter != "")
+        if (!this.hasCell(startX, startY)) return {};
+        let verticalBox = new WordPointBox(startX, startY, 1, 1, this.getCell(startX, startY), getBoardAtPoint(startX, startY));
+        let horizontalBox = new WordPointBox(startX, startY, 1, 1, this.getCell(startX, startY), getBoardAtPoint(startX, startY));
+        if (this.hasCell(startX, startY))
         {
             if (doY)
             {
                 let stride = 1;
-                while (this.placedLetters[0].length > startY + stride && this.placedLetters[startX][startY + stride].letter != "")
+                while (this.hasCell(startX,startY + stride))
                 {
-                    verticalBox.expandDown(this.placedLetters[startX][startY + stride], (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[startY + stride][startX])
+                    verticalBox.expandDown(this.getCell(startX, startY + stride), getBoardAtPoint(startX, startY + stride))
                     stride += 1;
                 }
                 stride = 1;
-                while (0 <= startY - stride && this.placedLetters[startX][startY - stride].letter != "")
+                while (this.hasCell(startX,startY - stride))
                 {
-                    verticalBox.expandUp(this.placedLetters[startX][startY - stride], (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[startY - stride][startX])
+                    verticalBox.expandUp(this.getCell(startX, startY - stride), getBoardAtPoint(startX, startY - stride))
                     stride += 1;
                 }
                 if (verticalBox.area() > 1 && draw)
@@ -827,22 +905,22 @@ export default class LetterLeagueBoard
                     this.canvasContext.fillStyle = "#000000"
                     this.canvasContext.textBaseline = "bottom"
                     this.canvasContext.textAlign = "left"
-                    this.canvasContext.fillText(verticalBox.getPoints(), verticalBox.x * zoom, verticalBox.y * zoom)
+                    this.canvasContext.fillText(verticalBox.getPoints(), (this.offsetX + verticalBox.x) * zoom, (this.offsetY + verticalBox.y) * zoom)
                     this.drawBox(verticalBox)
                 }
             }
             if (doX)
             {
                 let stride = 1;
-                while (this.placedLetters.length > startX + stride && this.placedLetters[startX + stride][startY].letter != "")
+                while (this.hasCell(startX + stride,startY))
                 {
-                    horizontalBox.expandRight(this.placedLetters[startX + stride][startY], (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[startY][startX + stride])
+                    horizontalBox.expandRight(this.getCell(startX + stride,startY), getBoardAtPoint(startX + stride, startY))
                     stride += 1;
                 }
                 stride = 1;
-                while (0 <= startX - stride && this.placedLetters[startX - stride][startY].letter != "")
+                while (this.hasCell(startX - stride,startY))
                 {
-                    horizontalBox.expandLeft(this.placedLetters[startX - stride][startY], (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[startY][startX - stride])
+                    horizontalBox.expandLeft(this.getCell(startX - stride,startY), getBoardAtPoint(startX - stride, startY))
                     stride += 1;
                 }
                 if (horizontalBox.area() > 1 && draw)
@@ -851,7 +929,7 @@ export default class LetterLeagueBoard
                     this.canvasContext.fillStyle = "#000000"
                     this.canvasContext.textAlign = "right"
                     this.canvasContext.textBaseline = "top"
-                    this.canvasContext.fillText(horizontalBox.getPoints(), horizontalBox.x * zoom, horizontalBox.y * zoom)
+                    this.canvasContext.fillText(horizontalBox.getPoints(), (this.offsetX + horizontalBox.x) * zoom, (this.offsetY + horizontalBox.y) * zoom)
                     this.drawBox(horizontalBox)
                 }
             }
@@ -876,15 +954,15 @@ export default class LetterLeagueBoard
 
     }
     /**
-     * 
+     * Check the point value a set of cells will get when placed on the board
      * @param {CellPlacement[]} tilePlacements 
      * @returns {WordPointBox[]}
      */
     checkPointsForPlacement(tilePlacements)
     {
         let boxes = []
-        let col = -1;
-        let row = -1;
+        let col = undefined;
+        let row = undefined;
         let rowOrCol = "U"
         for (let cell of tilePlacements)
         {
@@ -892,11 +970,11 @@ export default class LetterLeagueBoard
             if (col == cell.y && rowOrCol == "U") rowOrCol = "C"
             if (row != cell.x && rowOrCol == "R") return -1;
             if (col != cell.y && rowOrCol == "C") return -1;
-            if (col == -1) col = cell.y;
-            if (row == -1) row = cell.x;
+            if (col == undefined) col = cell.y;
+            if (row == undefined) row = cell.x;
 
-            cell.setReplacement(this.placedLetters[cell.x][cell.y]);
-            this.placedLetters[cell.x][cell.y] = cell;
+            cell.setReplacement(this.getCell(cell.x, cell.y));
+            this.setCell(cell.x, cell.y, cell);
         }
         let first = true
         for (let cell of tilePlacements)
@@ -907,10 +985,15 @@ export default class LetterLeagueBoard
         }
         for (let cell of tilePlacements)
         {
-            this.placedLetters[cell.x][cell.y] = cell.oldCell;
+            if (cell.oldCell) this.setCell(cell.x, cell.y, cell.oldCell);
+            else this.deleteCell(cell.x, cell.y)
         }
         return boxes.filter(box => box.area() > 1)
     }
+    /**
+     * Gets the hovered tile
+     * @returns The x and y coordinate of the cursor, in tilespace
+     */
     getHovered()
     {
         if (this.highlightedBox.type != "tilesquare") return {}
@@ -919,13 +1002,17 @@ export default class LetterLeagueBoard
             y: this.highlightedBox.y / zoom
         }
     }
+    /**
+     * Gets the next highest scoring placing of tiles
+     * @returns 
+     */
     placeNextTopScore()
     {
         if (this.topScoringPredictions.length == 0) return
         this.topScoringIndex += 1;
         this.topScoringIndex %= this.topScoringPredictions.length
-        this.placedTiles = {}
-        this.topScoringPredictions[this.topScoringIndex].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.placedTiles[letter.x + ":" + letter.y] = letter)
+        this.placedTiles.clear()
+        this.topScoringPredictions[this.topScoringIndex].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.setTile(letter.x, letter.y, letter))
         console.log(this.topScoringPredictions[this.topScoringIndex].points, this.topScoringPredictions[this.topScoringIndex].wdStr)
     }
     firstMove = true;
@@ -937,6 +1024,9 @@ export default class LetterLeagueBoard
         best: 0,
         shouldStop: false
     }
+    /**
+     * Finds the best moves and moves it to the `topScoringPredictions` field
+     */
     async findBestMove()
     {
         this.topScoringPredictions = []
@@ -982,7 +1072,7 @@ export default class LetterLeagueBoard
                 if (!legal) return;
                 let word = stack.map(a => a.letter).join("")
                 if (!isValidWord(word)) return;
-                let shouldDouble = hand.length == 0;
+                let shouldDouble = hand.length == 0 && board.hand.length == 7;
                 if (word.includes("?"))
                 {
                     
@@ -1045,8 +1135,8 @@ export default class LetterLeagueBoard
             this.topScoringPredictions.sort((a, b) => b.points - a.points)
             if (this.topScoringPredictions[0])
             {
-                this.placedTiles = {}
-                this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.placedTiles[letter.x + ":" + letter.y] = letter)
+                this.placedTiles.clear()
+                this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.setTile(letter.x, letter.y, letter))
                 this.hand = []
                 console.log(this.topScoringPredictions[0].points, this.topScoringPredictions[0].wdStr)
             }
@@ -1071,46 +1161,42 @@ export default class LetterLeagueBoard
                 alreadyChecked.add(`${x}:${y}:${stack.map(a=>a.letter).join("")}`)
                 if (board.progress.shouldStop) return;
                 board.progress.current++;
-                let hasBefore = x - direction.x > 0 && y - direction.y > 0
-                let beforeAlreadyFilled = hasBefore && board.placedLetters[x - direction.x][y - direction.y].letter != ""
-                if (beforeAlreadyFilled && !stack.find(Cell.equals(x - direction.x, y - direction.y)))
+                let hasBefore = board.hasCell(x - direction.x, y - direction.y)
+                if (hasBefore && !stack.find(Cell.equals(x - direction.x, y - direction.y)))
                 {
                     return;
                 }
-                let alreadyFilled = board.placedLetters[x][y].letter != ""
-                let hasNext = x + direction.x < board.placedLetters.length && y + direction.y < board.placedLetters[0].length;
-                let nextAlreadyFilled = hasNext && board.placedLetters[x + direction.x][y + direction.y].letter != ""
+                let alreadyFilled = board.hasCell(x, y)
+                let hasNext = board.hasCell(x + direction.x, y + direction.y);
 
                 if (alreadyFilled)
                 {
-                    let word = stack.map(a => a.letter).join("") + board.placedLetters[x][y].letter;
+                    let word = stack.map(a => a.letter).join("") + board.getCell(x, y).letter;
                     if (!anyWordsStartWith(word)) return;
-                    stack.push(new NotACell(x, y, board.placedLetters[x][y].letter))
+                    stack.push(new NotACell(x, y, board.getCell(x, y).letter))
                     checkNext(hand, x + direction.x, y + direction.y, stack, true, direction)
                     stack.pop()
                 } else
                 {
-                    if (hasNext) for (let index = 0; index < hand.length; index++)
+                    for (let index = 0; index < hand.length; index++)
                     {
                         let letter = hand[index];
                         if (!anyWordsStartWith(stack.map(v => v.letter).join("") + letter)) continue;
-                        let hasFilledSide = x - direction.y > 0 && y - direction.x > 0;
-                        let alreadyFilledSide = hasFilledSide && board.placedLetters[x - direction.y][y - direction.x].letter != "";
-                        let hasFilledOtherside = x + direction.y < board.placedLetters.length && y + direction.x < board.placedLetters[0].length;
-                        let alreadyFilledOtherside = hasFilledOtherside && board.placedLetters[x + direction.y][y + direction.x].letter != "";
+                        let hasFilledSide = board.hasCell(x - direction.y, y - direction.x);
+                        let hasFilledOtherside = board.hasCell(x + direction.y, y + direction.x);
                         let newHand = hand.replace(letter, "")
                         let newCell = new CellPlacement(x, y, letter, false, board)
                         stack.push(newCell)
-                        checkNext(newHand, x + direction.x, y + direction.y, stack, legal || alreadyFilledSide || alreadyFilledOtherside, direction)
+                        checkNext(newHand, x + direction.x, y + direction.y, stack, legal || hasFilledSide || hasFilledOtherside, direction)
                         stack.pop()
                     }
                 }
 
-                if (startingHand == hand || nextAlreadyFilled || !legal) return;
+                if (startingHand == hand || hasNext || !legal) return;
                 let word = stack.map(a => a.letter).join("");
                 if (!isValidWord(word)) return;
                 
-                let shouldDouble = hand.length == 0;
+                let shouldDouble = hand.length == 0 && board.hand.length == 7;
                 if (word.includes("?"))
                 {
                     let wildPlaces = word.split("").map((a, i) =>
@@ -1186,44 +1272,34 @@ export default class LetterLeagueBoard
                 for (let i = 0; i < depth; i++) {
                     let testX = x + direction.x * i;
                     let testY = y + direction.y * i;
-                    if (testY == (board.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length) return false;
-                    if (testX == (board.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0].length) return false;
-                    let hasBelow = testY < (board.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length - 1;
-                    let hasLeft = testX > 1;
-                    let hasRight = testX < (board.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0].length - 1;
-                    let hasAbove = testY > 1;
-                    let belowHasLetter = hasBelow && board.placedLetters[testX][testY+1].letter != ""
-                    let aboveHasLetter = hasAbove && board.placedLetters[testX][testY-1].letter != ""
-                    let rightHasLetter = hasRight && board.placedLetters[testX+1][testY].letter != ""
-                    let leftHasLetter = hasLeft && board.placedLetters[testX-1][testY].letter != "";
-                    if (belowHasLetter || aboveHasLetter || leftHasLetter || rightHasLetter) return true;
+                    let hasBelow = board.hasCell(testX, testY + 1);
+                    let hasLeft = board.hasCell(testX - 1, testY);
+                    let hasRight = board.hasCell(testX + 1, testY);
+                    let hasAbove = board.hasCell(testX, testY + 1);
+                    if (hasBelow || hasLeft || hasRight || hasAbove) return true;
                 }
                 return false;
             }
 
-            for (let x = 0; x < (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0].length; x++)
+            for (let x = this.minX - 7; x < this.maxX - this.minX + 7; x++)
             {
-                for (let y = 0; y < (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length; y++)
+                for (let y = this.minY - 7; y < this.maxY - this.minY + 7; y++)
                 {
-                    let hasBelow = y < (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length - 1;
-                    let hasLeft = x > 1;
-                    let hasRight = x < (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0].length - 1;
-                    let hasAbove = y > 1;
-                    let belowHasLetter = hasBelow && this.placedLetters[x][y+1].letter != ""
-                    let aboveHasLetter = hasAbove && this.placedLetters[x][y-1].letter != ""
-                    let rightHasLetter = hasRight && this.placedLetters[x+1][y].letter != ""
-                    let leftHasLetter = hasLeft && this.placedLetters[x-1][y].letter != "";
-                    let legal = belowHasLetter || aboveHasLetter || leftHasLetter || rightHasLetter;
-                    if (x != (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD)[0].length - 1 && checkCollision(7, x, y, {x: 1, y: 0})) checkNext(this.hand.join(""), x, y, [], legal, { x: 1, y: 0 })
-                    if (y != (this.bigBoard ? RAW_LARGE_BOARD : RAW_BOARD).length - 1 && checkCollision(7, x, y, {x: 0, y: 1})) checkNext(this.hand.join(""), x, y, [], legal, { x: 0, y: 1 })
+                    let hasBelow = this.hasCell(x, y + 1);
+                    let hasLeft = this.hasCell(x - 1, y);
+                    let hasRight = this.hasCell(x + 1, y);
+                    let hasAbove = this.hasCell(x, y - 1);
+                    let legal = hasBelow || hasLeft || hasRight || hasAbove;
+                    if (checkCollision(7, x, y, {x: 1, y: 0})) checkNext(this.hand.join(""), x, y, [], legal, { x: 1, y: 0 })
+                    if (checkCollision(7, x, y, {x: 0, y: 1})) checkNext(this.hand.join(""), x, y, [], legal, { x: 0, y: 1 })
                 }
             }
             /** @type {WordPointBox} */
             this.topScoringPredictions.sort((a, b) => b.points - a.points)
             if (this.topScoringPredictions[0])
             {
-                this.placedTiles = {}
-                this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.placedTiles[letter.x + ":" + letter.y] = letter)
+                this.placedTiles.clear()
+                this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.setTile(letter.x, letter.y, letter))
                 this.hand = []
                 console.log(this.topScoringPredictions[0].points, this.topScoringPredictions[0].wdStr)
             }

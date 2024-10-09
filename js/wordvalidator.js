@@ -17,6 +17,12 @@ for (let word of words)
     context[""] = 1;
     (WORDS_BY_LENGTH[word.length] = (WORDS_BY_LENGTH[word.length] || [])).push(word);
 }
+/**
+ * Makes a trie smaller when there is only one branch
+ * @param {object} value 
+ * @param {string} key 
+ * @param {object} parent 
+ */
 function compressTrie(value, key, parent)
 {
     for (let key2 in value)
@@ -32,6 +38,11 @@ function compressTrie(value, key, parent)
 }
 compressTrie(out, "", undefined)
 let isValidWordCache = new Map()
+/**
+ * Checks if a word is a valid english word
+ * Supports "?" as a wildcard
+ * @param {String} word 
+ */
 function isValidWord(word)
 {
     if (isValidWordCache.has(word)) return isValidWordCache.get(word);
@@ -52,12 +63,17 @@ function isValidWord(word)
         return false;
     }
 }
+/**
+ * Clears the cache of know substrings
+ * Clearing this for repeat operations slows down 
+ * performance for a decrease in memory usage
+ */
 function clearCaches() {
     isValidWordCache.clear();
     anyWordsStartWithCache.clear();
 }
 /**
- * 
+ * Get possible replacements for a wildcard ("?")
  * @param {string} word 
  * @returns 
  */
@@ -79,7 +95,9 @@ function getMysteryLetterOptions(word) {
 }
 let anyWordsStartWithCache = new Map()
 /**
- * 
+ * Checks if any words start with a given substring. 
+ * Includes full words
+ * Supports "?" as a wildcard
  * @param {string} startString 
  * @returns 
  */
@@ -129,6 +147,7 @@ function anyWordsStartWith(startString)
 
 if (window)
 {
+    // Apply some variables to global scope
     window.isValidWord = isValidWord;
     window.anyWordsStartWith = anyWordsStartWith;
     window.getMysteryLetterOptions = getMysteryLetterOptions;

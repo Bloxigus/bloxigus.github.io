@@ -15,8 +15,12 @@ window.addEventListener("mousemove", (event) => {
     window.board.mouseY = event.clientY
 })
 window.addEventListener("mousedown", (event) => {
-    window.board.onClick(event.button)
-    event.preventDefault()
+    if (event.button != 1)window.board.onClick(event.button)
+    if (event.button != 1) event.preventDefault()
+})
+window.addEventListener("mouseup", (event) => {
+    if (event.button != 1)window.board.onClickUp(event.button)
+        if (event.button != 1)event.preventDefault()
 })
 window.addEventListener("keydown", (event) => {
     if (!event.ctrlKey) window.board.onKeyboard(event.key)
