@@ -448,7 +448,7 @@ export default class LetterLeagueBoard
     updateWidth(newWidth)
     {
         let sidebar = 10; // 10 * width
-        let remainder = newWidth - sidebar * zoom
+        let remainder = newWidth - sidebar * zoom - 20
         let oldWidth = this.width
         this.width = remainder / 40
         this.height = 17
@@ -494,8 +494,8 @@ export default class LetterLeagueBoard
             () =>
             {
                 this.easeTo(
-                    Math.floor(this.width / 2),
-                    Math.floor(this.height / 2)
+                    (this.width / 2) - 0.5,
+                    (this.height / 2) - 0.5
                 )
             }
         ))
@@ -1125,6 +1125,9 @@ export default class LetterLeagueBoard
         this.topScoringIndex += 1;
         this.topScoringIndex %= this.topScoringPredictions.length
         this.placedTiles.clear()
+        let total = 0;
+        let xTotal = 0;
+        let yTotal = 0;
         this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) =>
         {
             total++;
@@ -1132,6 +1135,11 @@ export default class LetterLeagueBoard
             yTotal += letter.y;
             return this.setTile(letter.x, letter.y, letter)
         })
+        this.easeTo(
+            Math.floor(-xTotal / total + this.width / 2),
+            Math.floor(-yTotal / total + this.height / 2),
+            1000
+        )
         console.log(this.topScoringPredictions[this.topScoringIndex].points, this.topScoringPredictions[this.topScoringIndex].wdStr)
     }
     firstMove = true;
