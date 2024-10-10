@@ -412,7 +412,6 @@ export default class LetterLeagueBoard
     placedLetters;
     mouseX = -1
     mouseY = -1
-    bigBoard = false
     center = { x: 0, y: 0 }
     width = 1;
     height = 1;
@@ -432,9 +431,8 @@ export default class LetterLeagueBoard
      * 
      * @param {CanvasRenderingContext2D} canvasContext 
      */
-    init(canvasContext, bigBoard = false)
+    init(canvasContext)
     {
-        this.bigBoard = bigBoard
         this.placedLetters = new Map()
         this.originX = -16
         this.originY = -16
@@ -482,7 +480,7 @@ export default class LetterLeagueBoard
             () =>
             {
                 window.board = new LetterLeagueBoard()
-                window.board.init(canvasContext, bigBoard)
+                window.board.init(this.canvasContext)
             }
         ))
         this.buttons.push(new Button(

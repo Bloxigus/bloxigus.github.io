@@ -5,7 +5,7 @@ function wait(ms) {
 let board = new LetterLeagueBoard();
 
 let canvas = document.querySelector("canvas[data-display=renderer]").getContext("2d")
-board.init(canvas, true)
+board.init(canvas)
 let animate = function () {
     window.board.render();
     if (!window.stopit) requestAnimationFrame(animate)
