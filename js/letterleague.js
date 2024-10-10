@@ -29,6 +29,9 @@ window.addEventListener("keydown", (event) => {
 window.addEventListener("contextmenu", (event) => {
     // event.preventDefault()
 })
+window.addEventListener("resize", (event) => {
+    board.updateWidth(window.innerWidth)
+})
 window.board = board;
 requestAnimationFrame(animate)
 window.animate = animate;

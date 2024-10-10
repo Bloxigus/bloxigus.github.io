@@ -12,6 +12,10 @@ const BOARD_SEGMENT = [
     `___G_____G__`,
     `_Y____B____Y`
 ]
+function easeInOutQuad(x)
+{
+    return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+}
 let START_BOARD = [
     `S`
 ]
@@ -415,7 +419,15 @@ export default class LetterLeagueBoard
     originX = 0
     originY = 0
     offsetX = 15
-    offsetY = 15
+    offsetY = 15;
+    startX = 0;
+    endX = 0;
+    startY = 0;
+    endY = 0;
+    doEasing = false;
+    easingT = 0;
+    easeDuration = 1000
+    lastTimestamp = Date.now();
     /**
      * 
      * @param {CanvasRenderingContext2D} canvasContext 
@@ -428,9 +440,23 @@ export default class LetterLeagueBoard
         this.originY = -16
         this.width = 23
         this.height = 17
-        this.offsetX = Math.floor(this.width / 2);
-        this.offsetY = Math.floor(this.height / 2);
+        this.offsetX = this.width / 2 - 1;
+        this.offsetY = this.height / 2 - 1;
         this.canvasContext = canvasContext;
+        this.updateWidth(window.innerWidth)
+    }
+    updateWidth(newWidth)
+    {
+        let sidebar = 10; // 10 * width
+        let remainder = newWidth - sidebar * zoom
+        let oldWidth = this.width
+        this.width = remainder / 40
+        this.height = 17
+         // this.width / 2 - 1;
+
+        this.offsetX = (this.offsetX - 1 - oldWidth / 2) / oldWidth * this.width + this.width / 2 + 1;
+        // this.offsetY = this.offsetY / oldWidth * this.width;
+        this.buttons.length = 0;
         this.buttons.push(new Button(
             this.width * zoom + zoom / 2,
             zoom / 2,
@@ -467,14 +493,39 @@ export default class LetterLeagueBoard
             "Center Board",
             () =>
             {
-                this.offsetX = Math.floor(this.width / 2);
-                this.offsetY = Math.floor(this.height / 2);
+                this.easeTo(
+                    Math.floor(this.width / 2) - 0.5,
+                    Math.floor(this.height / 2) - 0.5
+                )
             }
         ))
     }
     pointLog = []
     render()
     {
+
+        if (this.doEasing)
+        {
+            if (this.t == 0)
+            {
+                this.lastTimestamp = Date.now()
+                this.t += 0.001
+            } else
+            {
+                let delta = Date.now() - this.lastTimestamp
+                this.lastTimestamp += delta
+                this.t += delta / this.easeDuration;
+            }
+            if (this.t >= 1)
+            {
+                this.doEasing = false;
+                this.t = 1;
+            }
+            this.offsetX = (1 - easeInOutQuad(this.t)) * this.startX + easeInOutQuad(this.t) * this.endX
+            this.offsetY = (1 - easeInOutQuad(this.t)) * this.startY + easeInOutQuad(this.t) * this.endY
+        }
+
+
         if (this.isClicking && (this.clickStartTime + 1250 < Date.now() || (this.mouseX - this.clickStartPos.x) ** 2 + (this.mouseY - this.clickStartPos.y) ** 2 > 100))
         {
             this.offsetX = (this.mouseX - this.clickStartPos.x) / zoom + this.clickStartPos.offsetX;
@@ -528,20 +579,30 @@ export default class LetterLeagueBoard
         canvasContext.strokeStyle = "#7F7F7F"
         let relativeX = (this.mouseX - rect.left);
         let relativeY = (this.mouseY - rect.top);
-        let insideX = Math.floor((this.mouseX - rect.left - this.offsetX * zoom) / zoom) * zoom + this.offsetX * zoom;
-        let insideY = Math.floor((this.mouseY - rect.top - this.offsetY * zoom) / zoom) * zoom + this.offsetY * zoom;
+        let insideX = Math.floor(
+            (this.mouseX - rect.left - this.offsetX * zoom) / zoom) * zoom + this.offsetX * zoom;
+        let insideY = Math.floor(
+            (this.mouseY - rect.top - this.offsetY * zoom) / zoom) * zoom + this.offsetY * zoom;
+        // console.log(insideX, insideY)
+        // console.log(relativeX, relativeY)
         if (insideX > width * zoom || insideX < 0 || insideY > height * zoom || insideY < 0)
         {
             this.hoveredBox = { type: "none" };
         } else
         {
             canvasContext.strokeRect(insideX, insideY, zoom, zoom)
-            this.hoveredBox = { x: insideX - this.offsetX * zoom, y: insideY - this.offsetY * zoom, type: "tilesquare" }
+            this.hoveredBox = {
+                x: insideX - this.offsetX * zoom,
+                y: insideY - this.offsetY * zoom, type: "tilesquare"
+            }
         }
         if (this.highlightedBox.type == "tilesquare")
         {
             canvasContext.strokeStyle = "#000000"
-            canvasContext.strokeRect(this.highlightedBox.x + this.offsetX * zoom, this.highlightedBox.y + this.offsetY * zoom, zoom, zoom)
+            canvasContext.strokeRect(
+                this.highlightedBox.x + this.offsetX * zoom,
+                this.highlightedBox.y + this.offsetY * zoom,
+                zoom, zoom)
         }
         canvasContext.fillStyle = "#000000"
         canvasContext.font = `${zoom}px ${font}`
@@ -581,35 +642,36 @@ export default class LetterLeagueBoard
         canvasContext.fillRect(this.width * zoom, 0, 2 * zoom, this.height * zoom + 2 * zoom)
         canvasContext.fillRect(0, this.height * zoom, this.width * zoom + 2 * zoom, 2 * zoom)
         canvasContext.fillStyle = "#F0F0F0"
-        canvasContext.fillRect(width * (0.5 * zoom) - 5 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
+        canvasContext.fillRect(width * (0.5 * zoom) - 0 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
         for (let handTile in this.hand)
         {
             canvasContext.textBaseline = "middle"
             canvasContext.fillStyle = "#E0E0E0"
-            canvasContext.fillRect(width * (0.5 * zoom) - 5 * zoom + 2 * zoom * handTile, height * zoom + Math.floor(0.5 * zoom), 2 * zoom, 2 * zoom)
+            canvasContext.fillRect(width * (0.5 * zoom) - 0 * zoom + 2 * zoom * handTile, height * zoom + Math.floor(0.5 * zoom), 2 * zoom, 2 * zoom)
             canvasContext.textAlign = "center"
             canvasContext.font = `${2 * zoom}px ${font}`
             canvasContext.fillStyle = "black"
-            canvasContext.fillText(this.hand[handTile].toLowerCase(), width * (0.5 * zoom) - 5 * zoom + 2 * zoom * handTile + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
+            canvasContext.fillText(this.hand[handTile].toLowerCase(), width * (0.5 * zoom) - 0 * zoom + 2 * zoom * handTile + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
         }
         if (this.hand.length == 0)
         {
+            canvasContext.textBaseline = "top"
             canvasContext.textAlign = "center"
             canvasContext.font = `${1 * zoom}px ${font}`
             canvasContext.fillStyle = "#A0A0A0"
-            canvasContext.fillText("Hand / Rack", width * (0.5 * zoom) - 5 * zoom + 2 * zoom * 1 + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
+            canvasContext.fillText("Hand / Rack", width * (0.5 * zoom) - 0 * zoom + 2 * zoom * 1 + zoom, height * zoom + Math.floor(0.5 * zoom) + zoom)
         }
 
         if (relativeY > height * zoom + Math.floor(0.5 * zoom) && relativeY < height * zoom + 2 * zoom + Math.floor(0.5 * zoom))
         {
             canvasContext.strokeStyle = "#7F7F7F"
-            canvasContext.strokeRect(width * (0.5 * zoom) - 5 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
+            canvasContext.strokeRect(width * (0.5 * zoom) - 0 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
             this.hoveredBox = { type: "hand" }
         }
         if (this.highlightedBox.type == "hand")
         {
             canvasContext.strokeStyle = "#8F8F8F"
-            canvasContext.strokeRect(width * (0.5 * zoom) - 5 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
+            canvasContext.strokeRect(width * (0.5 * zoom) - 0 * zoom, height * zoom + Math.floor(0.5 * zoom), 7 * 2 * zoom, 2 * zoom)
         }
         if (this.topScoringPredictions.length != 0)
         {
@@ -756,13 +818,19 @@ export default class LetterLeagueBoard
                         return;
                     }
 
-                    if (points.find(value => !isValidWord(value.word)))
+                    if (points.find(value => !isValidWord(value.word)) || points.length == 0)
                     {
                         this.placedTiles.clear()
                     } else
                     {
+                        let total = 0;
+                        let xTotal = 0;
+                        let yTotal = 0;
                         this.placedTiles.forEach(tile =>
                         {
+                            total++;
+                            xTotal += tile.x;
+                            yTotal += tile.y;
                             wordBox.addLetter(tile)
                             tile.isTemp = false;
                             this.setCell(tile.x, tile.y, tile);
@@ -774,6 +842,10 @@ export default class LetterLeagueBoard
                         points.forEach(wpb => wpb.updateLetters())
                         this.firstMove = false
                         this.topScoringPredictions = []
+                        this.easeTo(
+                            Math.floor(-xTotal / total + this.width / 2),
+                            Math.floor(-yTotal / total + this.height / 2)
+                        )
                     }
 
                 }
@@ -1053,7 +1125,13 @@ export default class LetterLeagueBoard
         this.topScoringIndex += 1;
         this.topScoringIndex %= this.topScoringPredictions.length
         this.placedTiles.clear()
-        this.topScoringPredictions[this.topScoringIndex].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.setTile(letter.x, letter.y, letter))
+        this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) =>
+        {
+            total++;
+            xTotal += letter.x;
+            yTotal += letter.y;
+            return this.setTile(letter.x, letter.y, letter)
+        })
         console.log(this.topScoringPredictions[this.topScoringIndex].points, this.topScoringPredictions[this.topScoringIndex].wdStr)
     }
     firstMove = true;
@@ -1177,6 +1255,8 @@ export default class LetterLeagueBoard
                 this.placedTiles.clear()
                 this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.setTile(letter.x, letter.y, letter))
                 this.hand = []
+                this.offsetX = Math.floor(this.width / 2);
+                this.offsetY = Math.floor(this.height / 2);
                 console.log(this.topScoringPredictions[0].points, this.topScoringPredictions[0].wdStr)
             }
         } else
@@ -1290,7 +1370,7 @@ export default class LetterLeagueBoard
                     {
                         let pts = current.getPoints()
                         if (pts == -1 || prev == -1) return -1;
-                        if (current.containingLetters.filter(a=>a.isTemp).length == 7 && shouldDouble) pts = pts + pts;
+                        if (current.containingLetters.filter(a => a.isTemp).length == 7 && shouldDouble) pts = pts + pts;
                         return prev + pts;
                     }, 0)
                     board.topScoringPredictions.push({
@@ -1339,13 +1419,37 @@ export default class LetterLeagueBoard
             if (this.topScoringPredictions[0])
             {
                 this.placedTiles.clear()
-                this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.setTile(letter.x, letter.y, letter))
+                let total = 0;
+                let xTotal = 0;
+                let yTotal = 0;
+                this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) =>
+                {
+                    total++;
+                    xTotal += letter.x;
+                    yTotal += letter.y;
+                    return this.setTile(letter.x, letter.y, letter)
+                })
+                this.easeTo(
+                    Math.floor(-xTotal / total + this.width / 2),
+                    Math.floor(-yTotal / total + this.height / 2),
+                    1000
+                )
                 this.hand = []
                 console.log(this.topScoringPredictions[0].points, this.topScoringPredictions[0].wdStr)
             }
         }
         this.showTempwords = true
         clearCaches()
+    }
+    easeTo(newX, newY, duration = 500)
+    {
+        this.endX = newX;
+        this.endY = newY;
+        this.startX = this.offsetX;
+        this.startY = this.offsetY;
+        this.t = 0;
+        this.doEasing = true;
+        this.easeDuration = duration
     }
 }
 window.CellPlacement = CellPlacement
