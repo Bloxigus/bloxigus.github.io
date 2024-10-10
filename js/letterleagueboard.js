@@ -494,8 +494,8 @@ export default class LetterLeagueBoard
             () =>
             {
                 this.easeTo(
-                    Math.floor(this.width / 2) - 0.5,
-                    Math.floor(this.height / 2) - 0.5
+                    Math.floor(this.width / 2),
+                    Math.floor(this.height / 2)
                 )
             }
         ))
