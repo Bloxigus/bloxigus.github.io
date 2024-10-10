@@ -1126,7 +1126,7 @@ export default class LetterLeagueBoard
         let total = 0;
         let xTotal = 0;
         let yTotal = 0;
-        this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) =>
+        this.topScoringPredictions[this.topScoringIndex].word.forEach(/**@param{CellPlacement}letter*/(letter) =>
         {
             total++;
             xTotal += letter.x;
