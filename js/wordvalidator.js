@@ -1,61 +1,105 @@
-import { getResource } from "./resourcemanager.js"
+import {
+    getResource
+} from "./resourcemanager.js"
 let WORDS_RAW = (await getResource("resources/llwords.txt", "text"))
 let words = WORDS_RAW.toLowerCase().split("\n")
-const WORDS_BY_LENGTH = []
 let out = {}
-for (let word of words)
-{
+
+function timer(name) {
+    let lastStart = 0
+    let started = false
+    let totalMillis = 0
+    return {
+        start: () => {
+            if (started) return
+            lastStart = performance.now()
+            started = true
+        },
+        stop: () => {
+            if (!started) return
+            totalMillis += performance.now() - lastStart
+            lastStart = 0
+            started = false
+        },
+        log: () => {
+            if (started) {
+                console.log(`Timer ${name}: ${totalMillis + (performance.now() - lastStart)}ms`)
+            } else {
+                console.log(`Timer ${name}: ${totalMillis}ms`)
+            }
+        }
+    }
+}
+
+for (let word of words) {
     let context = out
-    for (let letter of word)
-    {
-        if (context[letter] == undefined)
-        {
+    for (let letter of word) {
+        if (context[letter] == undefined) {
             context[letter] = {}
         }
         context = context[letter]
     }
     context[""] = 1;
-    (WORDS_BY_LENGTH[word.length] = (WORDS_BY_LENGTH[word.length] || [])).push(word);
 }
-/**
- * Makes a trie smaller when there is only one branch
- * @param {object} value 
- * @param {string} key 
- * @param {object} parent 
- */
-function compressTrie(value, key, parent)
-{
-    for (let key2 in value)
-    {
-        if (value[key2] && key2 && typeof value[key2] == "object") compressTrie(value[key2], key2, value)
-    }
-    if (Object.values(value).length == 1 && parent != undefined)
-    {
-        delete parent[key];
-        let appendKey = Object.keys(value)[0]
-        parent[key + appendKey] = value[appendKey]
-    }
-}
-compressTrie(out, "", undefined)
+
 let isValidWordCache = new Map()
 /**
  * Checks if a word is a valid english word
  * Supports "?" as a wildcard
  * @param {String} word 
  */
-function isValidWord(word)
-{
+function isValidWord(word) {
     if (isValidWordCache.has(word)) return isValidWordCache.get(word);
     if (word.includes("?")) {
-        let regex = new RegExp("^" + word.replaceAll("?","[a-z]") + "$", "m") 
-        if (regex.test(WORDS_RAW)) {
+        let contexts = [out];
+        let results = [""]
+        for (let letter of word) {
+            for (let i in contexts) {
+                if (contexts[i] != undefined) {
+                    if (letter == "?") {
+                        for (let contextOption in contexts[i]) {
+                            if (contextOption != "") {
+                                contexts.push(contexts[i][contextOption])
+                                results[contexts.length - 1] = results[i] + contextOption
+                            }
+                        }
+                        contexts[i] = undefined
+                        results[i] = undefined
+                    } else {
+                        if (letter in contexts[i]) {
+                            results[i] = results[i] + letter
+                            contexts[i] = contexts[i][letter]
+                        } else {
+                            results[i] = undefined
+                            contexts[i] = undefined
+                        }
+                    }
+                }
+            }
+            contexts = contexts.filter(a => a)
+            results = results.filter(a => a)
+        }
+        if (results.length >= 1 && contexts.some(a => a[""] != undefined)) {
             isValidWordCache.set(word, true)
             return true
         }
         isValidWordCache.set(word, false)
         return false;
     } else {
-        if (words.includes(word)) {
+        let context = out;
+        for (let letter of word) {
+            if (context == 1 || context == undefined) {
+                isValidWordCache.set(word, false)
+                return false;
+            }
+            if (letter in context) {
+                context = context[letter]
+            } else {
+                isValidWordCache.set(word, false)
+                return false;
+            }
+        }
+        if (context[""] != undefined) {
             isValidWordCache.set(word, true)
             return true;
         }
@@ -78,18 +122,43 @@ function clearCaches() {
  * @returns 
  */
 function getMysteryLetterOptions(word) {
-    let regex = new RegExp("^" + word.replaceAll("?","[a-z]") + "$") 
-    let options = []
-    for (let wordlistWord of words) {
-        if (regex.test(wordlistWord)) {
-            let option = [];
-            for (let letter in word) {
-                if (word[letter] == "?") {
-                    option.push(wordlistWord[letter])
+    let contexts = [out];
+    let results = [""]
+    for (let letter of word) {
+        for (let i in contexts) {
+            if (contexts[i] != undefined) {
+                if (letter == "?") {
+                    for (let contextOption in contexts[i]) {
+                        if (contextOption != "") {
+                            contexts.push(contexts[i][contextOption])
+                            results[contexts.length - 1] = results[i] + contextOption
+                        }
+                    }
+                    contexts[i] = undefined
+                    results[i] = undefined
+                } else {
+                    if (letter in contexts[i]) {
+                        results[i] = results[i] + letter
+                        contexts[i] = contexts[i][letter]
+                    } else {
+                        results[i] = undefined
+                        contexts[i] = undefined
+                    }
                 }
             }
-            options.push(option);
         }
+        contexts = contexts.filter(a => a)
+        results = results.filter(a => a)
+    }
+    let options = []
+    for (let result of results) {
+        let option = []
+        for (let letter in word) {
+            if (word[letter] == "?") {
+                option.push(result[letter])
+            }
+        }
+        options.push(option)
     }
     return options;
 }
@@ -101,42 +170,57 @@ let anyWordsStartWithCache = new Map()
  * @param {string} startString 
  * @returns 
  */
-function anyWordsStartWith(startString)
-{
+function anyWordsStartWith(startString) {
     if (anyWordsStartWithCache.has(startString)) return anyWordsStartWithCache.get(startString)
-    if (startString.includes("?"))
-    {
-        let regex = new RegExp("^" + startString.replaceAll("?","[a-z]"), "m")
-        if (regex.test(WORDS_RAW)) {
+    if (startString.includes("?")) {
+        let contexts = [out];
+        let results = [""]
+        for (let letter of startString) {
+            for (let i in contexts) {
+                if (contexts[i] != undefined) {
+                    if (letter == "?") {
+                        for (let contextOption in contexts[i]) {
+                            if (contextOption != "") {
+                                contexts.push(contexts[i][contextOption])
+                                results[contexts.length - 1] = results[i] + contextOption
+                            }
+                        }
+                        contexts[i] = undefined
+                        results[i] = undefined
+                    } else {
+                        if (letter in contexts[i]) {
+                            results[i] = results[i] + letter
+                            contexts[i] = contexts[i][letter]
+                        } else {
+                            results[i] = undefined
+                            contexts[i] = undefined
+                        }
+                    }
+                }
+            }
+        }
+        if (results.some(v => v != undefined)) {
             anyWordsStartWithCache.set(startString, true)
             return true;
         }
+
         anyWordsStartWithCache.set(startString, false)
         return false;
-    } else
-    {
+    } else {
         let context = out;
-        let key = ""
-        for (let letter of startString)
-        {
-            key += letter;
-            if (context == 1) {
+        for (let letter of startString) {
+            if (context == 1 || context == undefined) {
                 anyWordsStartWithCache.set(startString, false)
                 return false;
             }
-            if (key in context)
-            {
-                context = context[key]
-                key = ""
+            if (letter in context) {
+                context = context[letter]
+            } else {
+                anyWordsStartWithCache.set(startString, false)
+                return false;
             }
         }
-        if (key == "")
-        {
-            anyWordsStartWithCache.set(startString, true)
-            return true;
-        }
-        if (Object.keys(context).find(v => v.startsWith(key)))
-        {
+        if (context != undefined) {
             anyWordsStartWithCache.set(startString, true)
             return true;
         }
@@ -145,17 +229,14 @@ function anyWordsStartWith(startString)
     }
 }
 
-if (window)
-{
+if (window) {
     // Apply some variables to global scope
     window.isValidWord = isValidWord;
     window.anyWordsStartWith = anyWordsStartWith;
     window.getMysteryLetterOptions = getMysteryLetterOptions;
 }
-export
-{
+export {
     isValidWord,
-    WORDS_BY_LENGTH,
     anyWordsStartWith,
     getMysteryLetterOptions,
     clearCaches

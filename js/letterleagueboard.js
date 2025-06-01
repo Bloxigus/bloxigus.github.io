@@ -866,7 +866,9 @@ export default class LetterLeagueBoard
             } else if (key == "Enter")
             {
                 console.log(`Running Solver ...`)
+                console.time(`Solver Finished`)
                 this.findBestMove()
+                console.timeEnd(`Solver Finished`)
             }
         } else
         {
