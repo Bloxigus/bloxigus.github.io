@@ -1429,8 +1429,8 @@ export default class LetterLeagueBoard
     }
     solving = false
     async findBestMoveAsync() {
-        if (solving) return
-        solving = true
+        if (this.solving) return
+        this.solving = true
         window.WORKER_THREAD.postMessage({
             type: "solveAsync",
             board: this.toJSON()
@@ -1459,7 +1459,7 @@ export default class LetterLeagueBoard
                 this.hand = []
                 console.log(this.topScoringPredictions[0].points, this.topScoringPredictions[0].wdStr)
             }
-            solving = false
+            this.solving = false
         })
     }
     easeTo(newX, newY, duration = 500)
