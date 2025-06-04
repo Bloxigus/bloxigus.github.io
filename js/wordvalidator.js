@@ -1,7 +1,7 @@
 import {
     getResource
 } from "./resourcemanager.js"
-let WORDS_RAW = (await getResource("resources/llwords.txt", "text"))
+let WORDS_RAW = (await getResource("/resources/llwords.txt", "text"))
 let words = WORDS_RAW.toLowerCase().split("\n")
 let out = {}
 
@@ -229,12 +229,6 @@ function anyWordsStartWith(startString) {
     }
 }
 
-if (window) {
-    // Apply some variables to global scope
-    window.isValidWord = isValidWord;
-    window.anyWordsStartWith = anyWordsStartWith;
-    window.getMysteryLetterOptions = getMysteryLetterOptions;
-}
 export {
     isValidWord,
     anyWordsStartWith,

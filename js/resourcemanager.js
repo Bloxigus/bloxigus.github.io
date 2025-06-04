@@ -15,7 +15,7 @@ async function getResource(uri, returnType) {
         default: return await request.arrayBuffer()
     }
 }
-if (window) window.getResource = getResource
+// if (window) window.getResource = getResource
 export {
     getResource
 }

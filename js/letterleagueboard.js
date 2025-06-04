@@ -438,8 +438,8 @@ export default class LetterLeagueBoard
         this.originY = -16
         this.width = 23
         this.height = 17
-        this.offsetX = this.width / 2 - 1;
-        this.offsetY = this.height / 2 - 1;
+        this.offsetX = this.width / 2;
+        this.offsetY = this.height / 2;
         this.canvasContext = canvasContext;
         this.updateWidth(window.innerWidth)
     }
@@ -867,7 +867,7 @@ export default class LetterLeagueBoard
             {
                 console.log(`Running Solver ...`)
                 console.time(`Solver Finished`)
-                this.findBestMove()
+                this.findBestMoveAsync()
                 console.timeEnd(`Solver Finished`)
             }
         } else
@@ -992,7 +992,7 @@ export default class LetterLeagueBoard
      */
     drawWordBoxes(startX, startY, draw = true, doX = true, doY = true)
     {
-        this.canvasContext.font = `${0.25 * zoom}px ${font}`
+        if (draw) this.canvasContext.font = `${0.25 * zoom}px ${font}`
         if (!this.hasCell(startX, startY)) return {};
         let verticalBox = new WordPointBox(startX, startY, 1, 1, this.getCell(startX, startY), getBoardAtPoint(startX, startY));
         let horizontalBox = new WordPointBox(startX, startY, 1, 1, this.getCell(startX, startY), getBoardAtPoint(startX, startY));
@@ -1140,7 +1140,7 @@ export default class LetterLeagueBoard
             Math.floor(-yTotal / total + this.height / 2),
             1000
         )
-        console.log(this.topScoringPredictions[this.topScoringIndex].points, this.topScoringPredictions[this.topScoringIndex].wdStr)
+        console.log(Math.floor(this.topScoringPredictions[this.topScoringIndex].points), this.topScoringPredictions[this.topScoringIndex].wdStr)
     }
     firstMove = true;
     topScoringPredictions = []
@@ -1257,16 +1257,16 @@ export default class LetterLeagueBoard
                 checkNext(this.hand.join(""), center.x, center.y + offset, [], offset == 0, { x: 0, y: 1 })
             }
             /** @type {WordPointBox} */
-            this.topScoringPredictions.sort((a, b) => b.points - a.points)
-            if (this.topScoringPredictions[0])
-            {
-                this.placedTiles.clear()
-                this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.setTile(letter.x, letter.y, letter))
-                this.hand = []
-                this.offsetX = Math.floor(this.width / 2);
-                this.offsetY = Math.floor(this.height / 2);
-                console.log(this.topScoringPredictions[0].points, this.topScoringPredictions[0].wdStr)
-            }
+            // this.topScoringPredictions.sort((a, b) => b.points - a.points)
+            // if (this.topScoringPredictions[0])
+            // {
+            //     this.placedTiles.clear()
+            //     this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.setTile(letter.x, letter.y, letter))
+            //     this.hand = []
+            //     this.offsetX = Math.floor(this.width / 2);
+            //     this.offsetY = Math.floor(this.height / 2);
+            //     console.log(Math.floor(this.topScoringPredictions[0].points), this.topScoringPredictions[0].wdStr)
+            // }
         } else
         {
             let checkPointsForPlacement = this.checkPointsForPlacement.bind(this);
@@ -1423,6 +1423,20 @@ export default class LetterLeagueBoard
                 }
             }
             /** @type {WordPointBox} */
+        }
+        this.showTempwords = true
+        clearCaches()
+    }
+    solving = false
+    async findBestMoveAsync() {
+        if (solving) return
+        solving = true
+        window.WORKER_THREAD.postMessage({
+            type: "solveAsync",
+            board: this.toJSON()
+        })
+        awaitResponse(({solutions})=>{
+            this.topScoringPredictions = solutions
             this.topScoringPredictions.sort((a, b) => b.points - a.points)
             if (this.topScoringPredictions[0])
             {
@@ -1445,9 +1459,8 @@ export default class LetterLeagueBoard
                 this.hand = []
                 console.log(this.topScoringPredictions[0].points, this.topScoringPredictions[0].wdStr)
             }
-        }
-        this.showTempwords = true
-        clearCaches()
+            solving = false
+        })
     }
     easeTo(newX, newY, duration = 500)
     {
@@ -1459,5 +1472,44 @@ export default class LetterLeagueBoard
         this.doEasing = true;
         this.easeDuration = duration
     }
+    /**
+     * 
+     * @param {*} object 
+     * @returns {LetterLeagueBoard}
+     */
+    static fromJSON(object) {
+        let place = new LetterLeagueBoard()
+        place.placedLetters = object.placedLetters
+        place.hand = object.hand
+        place.firstMove = object.firstMove
+        return place
+    }
+    toJSON() {
+        return {
+            placedLetters: this.placedLetters,
+            hand: this.hand,
+            firstMove: this.firstMove
+        }
+    }
 }
-window.CellPlacement = CellPlacement
+
+let handler = ()=>{}
+
+function awaitResponse(func, id) {
+    handler = func
+}
+
+
+
+if (globalThis.window) {
+
+    window.CellPlacement = CellPlacement
+
+    window.WORKER_THREAD = new Worker("js/letterleagueworker.js", {type: "module"})
+
+    window.WORKER_THREAD.onmessage = function (message) {
+        // console.log(message)
+        handler(message.data)
+        handler = () => {}
+    }
+}
