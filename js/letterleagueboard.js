@@ -383,7 +383,9 @@ class CellPlacement extends Cell
         this.oldCell = oldCell
     }
     static setReplacement(cell, oldCell) {
-        cell.oldCell = oldCell
+        let replacementCell = new CellPlacement(cell.x, cell.y, cell.letter, cell.wild, cell.board)
+        replacementCell.oldCell = oldCell
+        return replacementCell
     }
     place()
     {
@@ -1089,7 +1091,7 @@ export default class LetterLeagueBoard
             if (col == undefined) col = cell.y;
             if (row == undefined) row = cell.x;
 
-            CellPlacement.setReplacement(cell, this.getCell(cell.x, cell.y));
+            cell = CellPlacement.setReplacement(cell, this.getCell(cell.x, cell.y));
             this.setCell(cell.x, cell.y, cell);
         }
         let first = true
