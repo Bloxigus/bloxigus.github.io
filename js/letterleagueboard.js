@@ -382,11 +382,6 @@ class CellPlacement extends Cell
     {
         this.oldCell = oldCell
     }
-    static setReplacement(cell, oldCell) {
-        let replacementCell = new CellPlacement(cell.x, cell.y, cell.letter, cell.wild, cell.board)
-        replacementCell.oldCell = oldCell
-        return replacementCell
-    }
     place()
     {
         this.isTemp = false;
@@ -1084,6 +1079,7 @@ export default class LetterLeagueBoard
         let rowOrCol = "U"
         for (let cell of tilePlacements)
         {
+            Object.setPrototypeOf(cell, CellPlacement.prototype)
             if (row == cell.x && rowOrCol == "U") rowOrCol = "R"
             if (col == cell.y && rowOrCol == "U") rowOrCol = "C"
             if (row != cell.x && rowOrCol == "R") return -1;
@@ -1091,7 +1087,7 @@ export default class LetterLeagueBoard
             if (col == undefined) col = cell.y;
             if (row == undefined) row = cell.x;
 
-            cell = CellPlacement.setReplacement(cell, this.getCell(cell.x, cell.y));
+            cell.setReplacement(this.getCell(cell.x, cell.y));
             this.setCell(cell.x, cell.y, cell);
         }
         let first = true
