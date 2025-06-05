@@ -1079,7 +1079,6 @@ export default class LetterLeagueBoard
         let rowOrCol = "U"
         for (let cell of tilePlacements)
         {
-            Object.setPrototypeOf(cell, CellPlacement.prototype)
             if (row == cell.x && rowOrCol == "U") rowOrCol = "R"
             if (col == cell.y && rowOrCol == "U") rowOrCol = "C"
             if (row != cell.x && rowOrCol == "R") return -1;
@@ -1257,17 +1256,6 @@ export default class LetterLeagueBoard
                 checkNext(this.hand.join(""), center.x + offset, center.y, [], offset == 0, { x: 1, y: 0 })
                 checkNext(this.hand.join(""), center.x, center.y + offset, [], offset == 0, { x: 0, y: 1 })
             }
-            /** @type {WordPointBox} */
-            // this.topScoringPredictions.sort((a, b) => b.points - a.points)
-            // if (this.topScoringPredictions[0])
-            // {
-            //     this.placedTiles.clear()
-            //     this.topScoringPredictions[0].word.forEach(/**@param{CellPlacement}letter*/(letter) => this.setTile(letter.x, letter.y, letter))
-            //     this.hand = []
-            //     this.offsetX = Math.floor(this.width / 2);
-            //     this.offsetY = Math.floor(this.height / 2);
-            //     console.log(Math.floor(this.topScoringPredictions[0].points), this.topScoringPredictions[0].wdStr)
-            // }
         } else
         {
             let checkPointsForPlacement = this.checkPointsForPlacement.bind(this);
@@ -1383,7 +1371,7 @@ export default class LetterLeagueBoard
                         return prev + pts;
                     }, 0)
                     board.topScoringPredictions.push({
-                        points: pts + Math.random() / 5,
+                        points: pts + Math.random() / 10 + 0.5 / word.length,
                         word: [...onlyPlaceables],
                         wdStr: word
                     })
@@ -1436,8 +1424,14 @@ export default class LetterLeagueBoard
             type: "solveAsync",
             board: this.toJSON()
         })
+        console.log(this)
         awaitResponse(({solutions})=>{
             this.topScoringPredictions = solutions
+            for (let solution of this.topScoringPredictions) {
+                for (let cell of solution.word) {
+                    Object.setPrototypeOf(cell, CellPlacement.prototype)
+                }
+            }
             this.topScoringPredictions.sort((a, b) => b.points - a.points)
             if (this.topScoringPredictions[0])
             {
@@ -1458,7 +1452,7 @@ export default class LetterLeagueBoard
                     1000
                 )
                 this.hand = []
-                console.log(this.topScoringPredictions[0].points, this.topScoringPredictions[0].wdStr)
+                console.log(Math.floor(this.topScoringPredictions[0].points), this.topScoringPredictions[0].wdStr)
             }
             this.solving = false
         })
@@ -1481,6 +1475,9 @@ export default class LetterLeagueBoard
     static fromJSON(object) {
         let place = new LetterLeagueBoard()
         place.placedLetters = object.placedLetters
+        for (let placedLetter of place.placedLetters) {
+            Object.setPrototypeOf(placedLetter[1], CellPlacement.prototype)
+        }
         place.hand = object.hand
         place.firstMove = object.firstMove
         return place
